@@ -435,7 +435,12 @@ public class ExpressionManager {
                 else
                     newConjuncts.add(descriptionSimplified);
             }
-            return d;
+            if (newConjuncts.isEmpty())
+                return m_factory.getOWLThing();
+            else if (newConjuncts.size()==1)
+                return newConjuncts.get(0);
+            else
+                return m_factory.getOWLObjectIntersectionOf(newConjuncts);
         }
         @Override
         public OWLClassExpression visit(OWLObjectUnionOf d) {
@@ -451,7 +456,12 @@ public class ExpressionManager {
                 else
                     newDisjuncts.add(descriptionSimplified);
             }
-            return m_factory.getOWLObjectUnionOf(newDisjuncts);
+            if (newDisjuncts.isEmpty())
+                return m_factory.getOWLNothing();
+            else if (newDisjuncts.size()==1)
+                return newDisjuncts.get(0);
+            else
+                return m_factory.getOWLObjectUnionOf(newDisjuncts);
         }
         @Override
         public OWLClassExpression visit(OWLObjectComplementOf d) {
