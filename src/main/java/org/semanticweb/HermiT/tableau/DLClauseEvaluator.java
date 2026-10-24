@@ -38,8 +38,8 @@ import org.semanticweb.HermiT.model.Term;
 import org.semanticweb.HermiT.model.Variable;
 import org.semanticweb.HermiT.monitor.TableauMonitor;
 
-import com.carrotsearch.hppcrt.lists.IntArrayList;
-import com.carrotsearch.hppcrt.maps.IntObjectHashMap;
+import com.carrotsearch.hppc.IntArrayList;
+import com.carrotsearch.hppc.IntObjectHashMap;
 
 /**DLClauseEvaluator*/
 public class DLClauseEvaluator implements Serializable {

@@ -35,7 +35,7 @@ import org.semanticweb.HermiT.model.InverseRole;
 import org.semanticweb.HermiT.model.Role;
 import org.semanticweb.HermiT.monitor.TableauMonitor;
 
-import com.carrotsearch.hppcrt.maps.IntObjectHashMap;
+import com.carrotsearch.hppc.IntObjectHashMap;
 
 /**ExtensionManager.*/
 public final class ExtensionManager implements Serializable {
@@ -110,8 +110,7 @@ public final class ExtensionManager implements Serializable {
             if (!m_extensionTablesByArity.containsKey(arityInteger))
                 m_extensionTablesByArity.put(arityInteger,new ExtensionTableWithFullIndex(m_tableau,descriptionGraph.getNumberOfVertices()+1,!m_tableau.isDeterministic()));
         }
-        m_allExtensionTablesArray=new ExtensionTable[m_extensionTablesByArity.size()];
-        m_extensionTablesByArity.values().toArray(m_allExtensionTablesArray);
+        m_allExtensionTablesArray=m_extensionTablesByArity.values().toArray(ExtensionTable.class);
         m_binaryAuxiliaryTupleContains=new Object[2];
         m_binaryAuxiliaryTupleAdd=new Object[2];
         m_ternaryAuxiliaryTupleContains=new Object[3];
