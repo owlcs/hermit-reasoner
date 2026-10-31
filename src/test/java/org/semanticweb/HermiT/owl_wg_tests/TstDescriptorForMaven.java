@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 // silly name because otherwise maven tries to run this as a test. Which fails
-@SuppressWarnings("javadoc")
-public class TstDescriptorForMaven {
+class TstDescriptorForMaven {
 
     public static Collection<Object[]> getEntailmentTestParams() throws Exception {
         // PWL code

@@ -9,18 +9,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.AssertionFailedError;
-import junit.framework.TestCase;
-@SuppressWarnings("javadoc")
-public abstract class AbstractHermiTTest extends TestCase {
+import org.opentest4j.AssertionFailedError;
 
-    public AbstractHermiTTest() {
-        super();
-    }
+import static org.junit.jupiter.api.Assertions.*;
 
-    public AbstractHermiTTest(String name) {
-        super(name);
-    }
+abstract class AbstractHermiTTest {
 
     protected Set<String> getStrings(String resourceName) throws Exception {
         Set<String> strings = new HashSet<>();
@@ -58,23 +51,8 @@ public abstract class AbstractHermiTTest extends TestCase {
 
     @SuppressWarnings("all")
     public static <T> void assertContainsAll(Collection<T> actual, T... control) {
-        try {
-            assertEquals(control.length, actual.size());
-            for (int i = 0; i < control.length; i++)
-                assertTrue(actual.contains(control[i]));
-        } catch (AssertionFailedError e) {
-            System.out.println("Control set (" + control.length + " elements):");
-            System.out.println("------------------------------------------");
-            for (T object : control)
-                System.out.println(object.toString());
-            System.out.println("------------------------------------------");
-            System.out.println("Actual set (" + actual.size() + " elements):");
-            System.out.println("------------------------------------------");
-            for (Object object : actual)
-                System.out.println(object.toString());
-            System.out.println("------------------------------------------");
-            System.out.flush();
-            throw e;
-        }
+        assertEquals(control.length, actual.size());
+        for (int i = 0; i < control.length; i++)
+            assertTrue(actual.contains(control[i]), control[i]+ " not in "+actual);
     }
 }

@@ -1,9 +1,8 @@
 package org.semanticweb.HermiT.bugs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.ReasonerFactory;
 import org.semanticweb.HermiT.datatypes.datetime.DateTime;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -11,7 +10,7 @@ import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 
-public class DateLiteralTest {
+class DateLiteralTest {
     @Test
     public void shouldTruncateToMillisecondsButAccebtArbitraryPrecision() throws OWLOntologyCreationException {
         // DateTime uses millisecond precision, regardless of precision of

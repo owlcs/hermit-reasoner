@@ -3,7 +3,11 @@ package org.semanticweb.HermiT.tableau;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.blocking.AnywhereBlocking;
 import org.semanticweb.HermiT.blocking.BlockingSignatureCache;
 import org.semanticweb.HermiT.blocking.BlockingStrategy;
@@ -21,8 +25,9 @@ import org.semanticweb.HermiT.model.Equality;
 import org.semanticweb.HermiT.model.NodeIDLessEqualThan;
 import org.semanticweb.HermiT.model.NodeIDsAscendingOrEqual;
 import org.semanticweb.HermiT.model.Variable;
-@SuppressWarnings("javadoc")
-public class NIRuleTest extends AbstractReasonerInternalsTest {
+//Test for the HermiT internals
+@Tag("tableau")
+class NIRuleTest extends AbstractReasonerInternalsTest {
     protected static final AtomicConcept A = AtomicConcept.create("A");
     protected static final AtomicConcept B = AtomicConcept.create("B");
     protected static final AtomicNegationConcept NEG_A = AtomicNegationConcept.create(A);
@@ -64,11 +69,7 @@ public class NIRuleTest extends AbstractReasonerInternalsTest {
     protected ExtensionManager m_extensionManager;
     protected NominalIntroductionManager m_manager;
 
-    public NIRuleTest(String name) {
-        super(name);
-    }
-
-    @Override
+    @BeforeEach
     protected void setUp() {
         PairWiseDirectBlockingChecker directChecker = new PairWiseDirectBlockingChecker();
         BlockingSignatureCache blockingSignatureCache = new BlockingSignatureCache(directChecker);
@@ -87,7 +88,7 @@ public class NIRuleTest extends AbstractReasonerInternalsTest {
         m_manager = null;
     }
 
-    public void testNIRuleDeterministic() {
+    @Test void testNIRuleDeterministic() {
         DependencySet emptySet = m_tableau.getDependencySetFactory().emptySet();
         Node a = m_tableau.createNewNINode(emptySet);
         Node b = m_tableau.createNewNINode(emptySet);
@@ -127,7 +128,7 @@ public class NIRuleTest extends AbstractReasonerInternalsTest {
         assertDependencySet(m_extensionManager.getAssertionDependencySet(R, a, newRoot));
     }
 
-    public void testNondeterministicEquality() {
+    @Test void testNondeterministicEquality() {
         DependencySet emptySet = m_tableau.getDependencySetFactory().emptySet();
         Node a = m_tableau.createNewNINode(emptySet);
         Node b = m_tableau.createNewNINode(emptySet);
@@ -203,7 +204,7 @@ public class NIRuleTest extends AbstractReasonerInternalsTest {
         assertFalse(m_tableau.doIteration());
     }
 
-    public void testNIPrunesOneNode() {
+    @Test void testNIPrunesOneNode() {
         DependencySet emptySet = m_tableau.getDependencySetFactory().emptySet();
         Node a = m_tableau.createNewNINode(emptySet);
         Node b = m_tableau.createNewNINode(emptySet);
@@ -247,7 +248,7 @@ public class NIRuleTest extends AbstractReasonerInternalsTest {
         assertTrue(m_extensionManager.containsAssertion(S, b, newRoot));
     }
 
-    public void testNIDoesNotPrune() {
+    @Test void testNIDoesNotPrune() {
         DependencySet emptySet = m_tableau.getDependencySetFactory().emptySet();
         Node a = m_tableau.createNewNINode(emptySet);
         Node b = m_tableau.createNewNINode(emptySet);
@@ -296,7 +297,7 @@ public class NIRuleTest extends AbstractReasonerInternalsTest {
         assertTrue(m_extensionManager.containsAssertion(T, c, newRoot));
     }
 
-    public void testRepeatedNIApplications() {
+    @Test void testRepeatedNIApplications() {
         DependencySet emptySet = m_tableau.getDependencySetFactory().emptySet();
         Node a = m_tableau.createNewNINode(emptySet);
         Node b = m_tableau.createNewNINode(emptySet);
@@ -346,7 +347,7 @@ public class NIRuleTest extends AbstractReasonerInternalsTest {
         assertFalse(m_extensionManager.containsAssertion(S, a_n2, a_n2));
     }
 
-    public void testContentingNIs() {
+    @Test void testContentingNIs() {
         DependencySet emptySet = m_tableau.getDependencySetFactory().emptySet();
         Node a = m_tableau.createNewNINode(emptySet);
         Node b = m_tableau.createNewNINode(emptySet);
@@ -391,7 +392,7 @@ public class NIRuleTest extends AbstractReasonerInternalsTest {
         assertDependencySet(m_extensionManager.getAssertionDependencySet(T, c, b_n1));
     }
 
-    public void testNIAndPruning() {
+    @Test void testNIAndPruning() {
         DependencySet emptySet = m_tableau.getDependencySetFactory().emptySet();
         Node a = m_tableau.createNewNINode(emptySet);
         Node a1 = m_tableau.createNewTreeNode(emptySet, a);
@@ -421,7 +422,7 @@ public class NIRuleTest extends AbstractReasonerInternalsTest {
         assertEquals(1, m_manager.m_annotatedEqualities.getFirstFreeTupleIndex());
     }
 
-    public void testDeterministicRuleApplication() {
+    @Test void testDeterministicRuleApplication() {
         DependencySet emptySet = m_tableau.getDependencySetFactory().emptySet();
         Node a = m_tableau.createNewNINode(emptySet);
         Node a1 = m_tableau.createNewTreeNode(emptySet, a);
@@ -451,7 +452,7 @@ public class NIRuleTest extends AbstractReasonerInternalsTest {
         assertTrue(m_extensionManager.containsAssertion(R, c, c_n1));
     }
 
-    public void testDisjunctionDerivation() {
+    @Test void testDisjunctionDerivation() {
         DependencySet emptySet = m_tableau.getDependencySetFactory().emptySet();
         Node a = m_tableau.createNewNINode(emptySet);
         Node a1 = m_tableau.createNewTreeNode(emptySet, a);
@@ -517,7 +518,7 @@ public class NIRuleTest extends AbstractReasonerInternalsTest {
         assertFalse(m_tableau.doIteration());
     }
 
-    public void testDisjunctionsInTreePart() {
+    @Test void testDisjunctionsInTreePart() {
         DependencySet emptySet = m_tableau.getDependencySetFactory().emptySet();
         Node a = m_tableau.createNewNINode(emptySet);
         Node a1 = m_tableau.createNewTreeNode(emptySet, a);

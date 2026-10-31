@@ -1,5 +1,6 @@
 package org.semanticweb.HermiT.structural;
 
+import static org.junit.jupiter.api.Assertions.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -8,55 +9,43 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.semanticweb.HermiT.Configuration;
 import org.semanticweb.HermiT.model.DLClause;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLHasKeyAxiom;
-@SuppressWarnings("javadoc")
-public class ClausificationTest extends AbstractStructuralTest {
 
-    public void testBasic() throws Exception {
-        assertClausification("res/basic-input.xml", "res/basic-control.txt");
+class ClausificationTest extends AbstractStructuralTest {
+    @ParameterizedTest
+    @CsvSource({ "testBasic,res/basic-input.xml,res/basic-control.txt",
+            "testNominals1,res/nominals-1-input.xml,res/nominals-1-control.txt",
+            "testNominals2,res/nominals-2-input.xml,res/nominals-2-control.txt",
+            "testNominals3,res/nominals-3-input.xml,res/nominals-3-control.txt",
+            "testNominals4,res/nominals-4-input.xml,res/nominals-4-control.txt",
+            "testExistsSelf1,res/has-self-1-input.owl,res/has-self-1-control.txt",
+            "testExistsSelf2,res/has-self-2-input.owl,res/has-self-2-control.txt" })
+    void clausification(String name, String ontology, String control) throws Exception {
+        assertClausification(name, ontology, control);
     }
 
-    public void testNominals1() throws Exception {
-        assertClausification("res/nominals-1-input.xml", "res/nominals-1-control.txt");
-    }
-
-    public void testNominals2() throws Exception {
-        assertClausification("res/nominals-2-input.xml", "res/nominals-2-control.txt");
-    }
-
-    public void testNominals3() throws Exception {
-        assertClausification("res/nominals-3-input.xml", "res/nominals-3-control.txt");
-    }
-
-    public void testNominals4() throws Exception {
-        assertClausification("res/nominals-4-input.xml", "res/nominals-4-control.txt");
-    }
-
-    public void testAsymmetry() throws Exception {
-        String axioms = "Declaration(ObjectProperty(:as))";
-        axioms += "Declaration(ObjectProperty(:as))";
-        axioms += "Declaration(NamedIndividual(:a))";
-        axioms += "Declaration(NamedIndividual(:b))";
-        axioms += "AsymmetricObjectProperty(:as)";
-        axioms += "SubObjectPropertyOf(:r :as)";
-        axioms += "ObjectPropertyAssertion(:r :a :b)";
-        axioms += "ObjectPropertyAssertion(:as :b :a)";
+    @Test
+    void testAsymmetry() throws Exception {
+        String axioms = "Declaration(ObjectProperty(:as))" 
+                + "Declaration(ObjectProperty(:as))"
+                + "Declaration(NamedIndividual(:a))" 
+                + "Declaration(NamedIndividual(:b))"
+                + "AsymmetricObjectProperty(:as)" 
+                + "SubObjectPropertyOf(:r :as)" 
+                + "ObjectPropertyAssertion(:r :a :b)"
+                + "ObjectPropertyAssertion(:as :b :a)";
         loadOntologyWithAxioms(axioms);
-        assertDLClauses(getControl("res/asymmetry-control.txt"));
+        assertDLClauses("testAsymmetry", getControl("res/asymmetry-control.txt"));
     }
 
-    public void testExistsSelf1() throws Exception {
-        assertClausification("res/has-self-1-input.owl", "res/has-self-1-control.txt");
-    }
-
-    public void testExistsSelf2() throws Exception {
-        assertClausification("res/has-self-2-input.owl", "res/has-self-2-control.txt");
-    }
-
-    public void testHasKeys() {
+    @Test
+    void testHasKeys() {
         OWLClausification clausifier = new OWLClausification(new Configuration());
         OWLHasKeyAxiom key = m_dataFactory.getOWLHasKeyAxiom(m_dataFactory.getOWLClass(IRI.create("int:C_test")),
                 m_dataFactory.getOWLObjectProperty(IRI.create("int:r_test")),
@@ -75,7 +64,7 @@ public class ClausificationTest extends AbstractStructuralTest {
         assertTrue(bAtoms.size() == clause.getBodyLength());
         for (int i = 0; i < clause.getBodyLength(); i++) {
             String string = clause.getBodyAtom(i).toString();
-            assertTrue(string, bAtoms.contains(string));
+            assertTrue(bAtoms.contains(string), string);
         }
         Set<String> hAtoms = new HashSet<>();
         hAtoms.add("X1 == X2");
@@ -90,10 +79,10 @@ public class ClausificationTest extends AbstractStructuralTest {
         if (resource == null)
             return null;
         List<String> control = new ArrayList<>();
-        
+
         try (InputStream in = getClass().getResourceAsStream(resource);
-        InputStreamReader in2 = new InputStreamReader(in);
-        BufferedReader reader = new BufferedReader(in2);){
+                InputStreamReader in2 = new InputStreamReader(in);
+                BufferedReader reader = new BufferedReader(in2);) {
             String line = reader.readLine();
             while (line != null) {
                 control.add(line);
@@ -105,13 +94,13 @@ public class ClausificationTest extends AbstractStructuralTest {
         return controlArray;
     }
 
-    protected void assertClausification(String ontologyResource, String controlResource) throws Exception {
+    protected void assertClausification(String name, String ontologyResource, String controlResource) throws Exception {
         loadOntologyFromResource(ontologyResource);
-        assertDLClauses(getControl(controlResource));
+        assertDLClauses(name, getControl(controlResource));
     }
 
-    protected void assertDLClauses(String[] control) {
+    protected void assertDLClauses(String name, String[] control) {
         List<String> actualStrings = getDLClauses();
-        assertContainsAll(this.getName(), actualStrings, control);
+        assertContainsAll(name, actualStrings, control);
     }
 }

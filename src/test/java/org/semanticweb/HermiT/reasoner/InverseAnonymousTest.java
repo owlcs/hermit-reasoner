@@ -1,6 +1,6 @@
 package org.semanticweb.HermiT.reasoner;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.semanticweb.owlapi.util.OWLAPIStreamUtils.asSet;
 
 import java.util.Arrays;
@@ -8,14 +8,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.ReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.StringDocumentSource;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
-public class InverseAnonymousTest {
+class InverseAnonymousTest {
     String input = "Prefix: : <http://example.org/>\n" + "        Ontology: <http://asdf>\n"
             + "        ObjectProperty: hasBigPart\n" + "            SubPropertyOf: hasPart, inverse (partOf)\n"
             + "        ObjectProperty: hasPart\n" + "            InverseOf:  partOf\n"

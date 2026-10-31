@@ -2,7 +2,10 @@ package org.semanticweb.HermiT;
 
 import java.util.Collection;
 import java.util.Set;
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.semanticweb.HermiT.model.DescriptionGraph;
 import org.semanticweb.HermiT.tableau.Tableau;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -26,6 +29,7 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 @SuppressWarnings("javadoc")
 public abstract class AbstractOntologyTest extends AbstractHermiTTest {
@@ -38,22 +42,13 @@ public abstract class AbstractOntologyTest extends AbstractHermiTTest {
     protected OWLDataFactory m_dataFactory;
     protected OWLOntology m_ontology;
 
-    public AbstractOntologyTest() {
-        super();
-    }
-
-    public AbstractOntologyTest(String name) {
-        super(name);
-    }
-
-    @Override
+    @BeforeEach
     protected void setUp() {
         m_ontologyManager = OWLManager.createOWLOntologyManager();
         m_dataFactory = m_ontologyManager.getOWLDataFactory();
     }
 
-    @Override
-    protected void tearDown() {
+    @AfterEach void tearDown() {
         m_ontologyManager = null;
         m_dataFactory = null;
         m_ontology = null;
@@ -74,9 +69,10 @@ public abstract class AbstractOntologyTest extends AbstractHermiTTest {
      *
      * @param physicalURI
      *            the physical location of the ontology
+     * @throws OWLOntologyCreationException 
      * @throws Exception
      */
-    protected void loadOntology(String physicalURI) throws Exception {
+    protected void loadOntology(String physicalURI) throws OWLOntologyCreationException {
         m_ontology = m_ontologyManager.loadOntologyFromOntologyDocument(IRI.create(physicalURI));
     }
 
@@ -109,12 +105,12 @@ public abstract class AbstractOntologyTest extends AbstractHermiTTest {
      * Converts the axioms to a string via the toString method and compares it
      * with the given string.
      */
-    protected void assertEquals(Set<OWLAxiom> axioms, String controlResourceName) throws Exception {
+    protected void assertEqualAxioms(Set<OWLAxiom> axioms, String controlResourceName) throws Exception {
         String axiomsString = axioms.toString().trim();
         String controlString = getResourceText(controlResourceName).trim();
         boolean isOK = axiomsString.equals(controlString);
         if (!isOK) {
-            System.out.println("Test " + this.getName() + " failed!");
+            System.out.println("Test " + getClass().getSimpleName() + " failed!");
             System.out.println("Control string:");
             System.out.println("------------------------------------------");
             System.out.println(controlString);
@@ -132,7 +128,7 @@ public abstract class AbstractOntologyTest extends AbstractHermiTTest {
      * converts the axioms to a string via the toString method and compares it
      * with the given string
      */
-    protected void assertEquals(Set<OWLAxiom> axioms, String controlResourceName1, String controlResourceName2)
+    protected void assertEqualAxioms(Set<OWLAxiom> axioms, String controlResourceName1, String controlResourceName2)
             throws Exception {
         String axiomsString = axioms.toString().trim();
         String controlString1 = null;
@@ -148,7 +144,7 @@ public abstract class AbstractOntologyTest extends AbstractHermiTTest {
             isOK = axiomsString.equals(controlString2);
         }
         if (!isOK) {
-            System.out.println("Test " + this.getName() + " failed!");
+            System.out.println("Test " + getClass().getSimpleName() + " failed!");
             if (controlString1 != null) {
                 System.out.println("Control string: (variant 1)");
                 System.out.println("------------------------------------------");

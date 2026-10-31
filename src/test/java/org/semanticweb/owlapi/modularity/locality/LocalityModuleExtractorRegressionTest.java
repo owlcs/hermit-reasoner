@@ -21,7 +21,7 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
 /** Regression tests for indexed locality-based module extraction. */
 @Tag("regression")
-public class LocalityModuleExtractorRegressionTest {
+class LocalityModuleExtractorRegressionTest {
 
     private final OWLDataFactory df = OWLManager.createOWLOntologyManager().getOWLDataFactory();
     private final OWLClass a = named("A");

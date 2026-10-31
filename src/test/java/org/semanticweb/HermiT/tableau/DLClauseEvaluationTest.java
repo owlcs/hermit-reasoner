@@ -1,9 +1,14 @@
 package org.semanticweb.HermiT.tableau;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.blocking.AnywhereBlocking;
 import org.semanticweb.HermiT.blocking.BlockingSignatureCache;
 import org.semanticweb.HermiT.blocking.BlockingStrategy;
@@ -15,8 +20,9 @@ import org.semanticweb.HermiT.model.AtomicRole;
 import org.semanticweb.HermiT.model.DLClause;
 import org.semanticweb.HermiT.model.DLOntology;
 import org.semanticweb.HermiT.model.Variable;
-@SuppressWarnings("javadoc")
-public class DLClauseEvaluationTest extends AbstractReasonerInternalsTest {
+//Test for the HermiT internals
+@Tag("tableau")
+class DLClauseEvaluationTest extends AbstractReasonerInternalsTest {
 
     protected static final AtomicRole R = AtomicRole.create("R");
     protected static final AtomicRole S = AtomicRole.create("S");
@@ -40,11 +46,7 @@ public class DLClauseEvaluationTest extends AbstractReasonerInternalsTest {
     protected Tableau m_tableau;
     protected ExtensionManager m_extensionManager;
 
-    public DLClauseEvaluationTest(String name) {
-        super(name);
-    }
-
-    @Override
+    @BeforeEach
     protected void setUp() {
         PairWiseDirectBlockingChecker directChecker = new PairWiseDirectBlockingChecker();
         BlockingSignatureCache blockingSignatureCache = new BlockingSignatureCache(directChecker);
@@ -55,7 +57,7 @@ public class DLClauseEvaluationTest extends AbstractReasonerInternalsTest {
         m_extensionManager = m_tableau.getExtensionManager();
     }
 
-    public void testEvaluator() {
+    @Test void testEvaluator() {
         DependencySet emptySet = m_tableau.getDependencySetFactory().emptySet();
 
         Node a = m_tableau.createNewNINode(emptySet);

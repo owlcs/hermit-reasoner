@@ -1,14 +1,13 @@
 package org.semanticweb.HermiT.reasoner;
 
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.Configuration;
-@SuppressWarnings("javadoc")
-public class ClassificationIndividualReuseTest extends AbstractReasonerTest {
+//Unit tests for HermiT as a blackbox -- the heavy subset.
+@Tag("AllHeavyTests")
+class ClassificationIndividualReuseTest extends AbstractReasonerTest {
 
-    public ClassificationIndividualReuseTest(String name) {
-        super(name);
-    }
-
-    public void testDolce() throws Exception {
+    @Test void testDolce() throws Exception {
         loadReasonerFromResource("res/dolce_all.xml");
         assertHierarchies("res/dolce_all.xml.txt");
     }

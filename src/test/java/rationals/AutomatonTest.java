@@ -34,34 +34,24 @@
  *
  */
 package rationals;
-
+import static org.junit.jupiter.api.Assertions.*;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author nono
  * @version $Id: AutomatonTest.java 2 2006-08-24 14:41:48Z oqube $
  */
-@SuppressWarnings("javadoc")
-public class AutomatonTest extends TestCase {
+class AutomatonTest  {
 
     private Automaton automaton;
     private State[] ss;
 
-    /**
-     * Constructor for AutomatonTest.
-     * 
-     * @param arg0
-     */
-    public AutomatonTest(String arg0) {
-        super(arg0);
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @BeforeEach
+    void setUp() throws Exception {
         automaton = new Automaton();
         /* states */
         ss = new State[5];
@@ -83,14 +73,14 @@ public class AutomatonTest extends TestCase {
         automaton.addTransition(new Transition(ss[4], "a", ss[4]), null);
     }
 
-    public void testAddState() {
+    @Test void testAddState() {
         State s = automaton.addState(false, false);
         assertTrue(automaton.states().contains(s));
         assertTrue(!automaton.initials().contains(s));
         assertTrue(!automaton.terminals().contains(s));
     }
 
-    public void testAlphabet() {
+    @Test void testAlphabet() {
         Set<String> alph = new HashSet<>();
         alph.add("a");
         alph.add("b");
@@ -99,19 +89,19 @@ public class AutomatonTest extends TestCase {
         assertTrue(automaton.alphabet().equals(alph));
     }
 
-    public void testStates() {
+    @Test void testStates() {
         State s = automaton.addState(false, false);
         assertTrue(automaton.states().contains(s) && automaton.states().size() == 6);
     }
 
-    public void testInitials() {
+    @Test void testInitials() {
         State s = automaton.addState(true, false);
         assertTrue(automaton.states().contains(s));
         assertTrue(automaton.initials().contains(s));
         assertTrue(!automaton.terminals().contains(s));
     }
 
-    public void testTerminals() {
+    @Test void testTerminals() {
         State s = automaton.addState(false, true);
         assertTrue(automaton.states().contains(s));
         assertTrue(!automaton.initials().contains(s));
@@ -121,7 +111,7 @@ public class AutomatonTest extends TestCase {
     /*
      * Class under test for Set accessibleStates()
      */
-    public void testAccessibleStates() {
+    @Test void testAccessibleStates() {
         State s5 = automaton.addState(false, false);
         State s6 = automaton.addState(false, false);
         automaton.addTransition(new Transition(ss[0], "c", s5), null);
@@ -134,7 +124,7 @@ public class AutomatonTest extends TestCase {
     /*
      * Class under test for Set coAccessibleStates()
      */
-    public void testCoAccessibleStates() {
+    @Test void testCoAccessibleStates() {
         State s5 = automaton.addState(false, false);
         State s6 = automaton.addState(false, false);
         automaton.addTransition(new Transition(s5, "c", ss[4]), null);
@@ -144,7 +134,7 @@ public class AutomatonTest extends TestCase {
         assertTrue(acc.contains(s5) && acc.contains(s6));
     }
 
-    public void testAccessibleAndCoAccessibleStates() {
+    @Test void testAccessibleAndCoAccessibleStates() {
         Set<State> acc = automaton.accessibleAndCoAccessibleStates();
         State s5 = automaton.addState(false, false);
         State s6 = automaton.addState(false, false);

@@ -1,12 +1,11 @@
 package org.semanticweb.HermiT.reasoner;
 
+import org.junit.jupiter.api.Tag;
 import org.semanticweb.HermiT.Configuration;
-@SuppressWarnings("javadoc")
-public class ReasonerIndividualReuseTest extends ReasonerTest {
 
-    public ReasonerIndividualReuseTest(String name) {
-        super(name);
-    }
+//Unit tests for HermiT as a blackbox -- the quick subset.
+@Tag("AllQuickTests")
+class ReasonerIndividualReuseTest extends ReasonerTest {
 
     @Override
     protected Configuration getConfiguration() {

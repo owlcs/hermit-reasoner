@@ -1,30 +1,31 @@
 package org.semanticweb.HermiT.reasoner;
-@SuppressWarnings("javadoc")
-public class SimpleRolesTest extends AbstractReasonerTest {
 
-    public SimpleRolesTest(String name) {
-        super(name);
-    }
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-    public void testSimpleRoles1() throws Exception {
+//Unit tests for HermiT as a blackbox -- the quick subset.
+@Tag("AllQuickTests")
+class SimpleRolesTest extends AbstractReasonerTest {
+
+    @Test void testSimpleRoles1() throws Exception {
         String axioms = "TransitiveObjectProperty(:R) " + "SubObjectPropertyOf(:R :P) "
                 + "SubClassOf(:C ObjectMinCardinality(2 :P))";
         assertSimple(axioms, false);
     }
 
-    public void testSimpleRoles2() throws Exception {
+    @Test void testSimpleRoles2() throws Exception {
         String axioms = "SubObjectPropertyOf(ObjectPropertyChain(:R :Q) :R) " + "SubObjectPropertyOf(:R :P) "
                 + "SubClassOf(:C ObjectMaxCardinality(2 :P))";
         assertSimple(axioms, false);
     }
 
-    public void testSimpleRoles3() throws Exception {
+    @Test void testSimpleRoles3() throws Exception {
         String axioms = "SubObjectPropertyOf(ObjectPropertyChain(:R :Q) :R) " + "SubObjectPropertyOf(:R :S) "
                 + "InverseObjectProperties(:S :S-) " + "SubClassOf(:C ObjectMaxCardinality(2 :S-))";
         assertSimple(axioms, false);
     }
 
-    public void testSimpleRoles4() throws Exception {
+    @Test void testSimpleRoles4() throws Exception {
         String axioms = "TransitiveObjectProperty(:R-) " + "SubObjectPropertyOf(:R :P) " + "SubObjectPropertyOf(:P :S) "
                 + "InverseObjectProperties(:R :R-) " + "InverseObjectProperties(:S :S-) "
                 + "SubClassOf(:C ObjectMaxCardinality(2 :S-))";

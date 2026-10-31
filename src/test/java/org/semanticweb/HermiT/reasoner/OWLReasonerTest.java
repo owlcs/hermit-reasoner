@@ -1,10 +1,12 @@
 package org.semanticweb.HermiT.reasoner;
 
 import static org.semanticweb.owlapi.util.OWLAPIStreamUtils.asSet;
-
+import static org.junit.jupiter.api.Assertions.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.AbstractOntologyTest;
 import org.semanticweb.HermiT.Configuration;
 import org.semanticweb.owlapi.model.IRI;
@@ -16,14 +18,12 @@ import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.reasoner.IndividualNodeSetPolicy;
 import org.semanticweb.owlapi.reasoner.Node;
 import org.semanticweb.owlapi.reasoner.NodeSet;
-@SuppressWarnings("javadoc")
-public class OWLReasonerTest extends AbstractReasonerTest {
 
-    public OWLReasonerTest(String name) {
-        super(name);
-    }
+//Unit tests for HermiT as a blackbox -- the quick subset.
+@Tag("AllQuickTests")
+class OWLReasonerTest extends AbstractReasonerTest {
 
-    public void testgetInverseObjectPropertyExpressions() throws Exception {
+    @Test void testgetInverseObjectPropertyExpressions() throws Exception {
         String axioms = "SubObjectPropertyOf(:r ObjectInverseOf(:s))" + "SubObjectPropertyOf(:s ObjectInverseOf(:t))"
                 + "SubObjectPropertyOf(:t :r)";
         loadOntologyWithAxioms(axioms);
@@ -43,7 +43,7 @@ public class OWLReasonerTest extends AbstractReasonerTest {
         assertEquals(asSet(invr_inverses.entities()), invr_inverses_expected);
     }
 
-    public void testBottomObjectPropertySubs() throws Exception {
+    @Test void testBottomObjectPropertySubs() throws Exception {
         String axioms = "SubObjectPropertyOf(:r :s)";
         loadOntologyWithAxioms(axioms);
         createOWLReasoner();
@@ -51,7 +51,7 @@ public class OWLReasonerTest extends AbstractReasonerTest {
         assertTrue(m_reasoner.getSubObjectProperties(m_dataFactory.getOWLBottomObjectProperty(), true).isEmpty());
     }
 
-    public void testTopObjectPropertySupers() throws Exception {
+    @Test void testTopObjectPropertySupers() throws Exception {
         String axioms = "SubObjectPropertyOf(:r :s)";
         loadOntologyWithAxioms(axioms);
         createOWLReasoner();
@@ -59,7 +59,7 @@ public class OWLReasonerTest extends AbstractReasonerTest {
         assertTrue(m_reasoner.getSuperObjectProperties(m_dataFactory.getOWLTopObjectProperty(), true).isEmpty());
     }
 
-    public void testIncrementalAddition() throws Exception {
+    @Test void testIncrementalAddition() throws Exception {
         String axioms = "SubClassOf(:A :B)";
         loadOntologyWithAxioms(axioms);
 
@@ -168,7 +168,7 @@ public class OWLReasonerTest extends AbstractReasonerTest {
         assertTrue(cDirect.entities().count() == 1L);
     }
 
-    public void testIncrementalAddition2() throws Exception {
+    @Test void testIncrementalAddition2() throws Exception {
         String axioms = "ObjectPropertyAssertion(:f :a :b) FunctionalObjectProperty(:f)";
         loadOntologyWithAxioms(axioms);
 
@@ -194,7 +194,7 @@ public class OWLReasonerTest extends AbstractReasonerTest {
         assertTrue(m_reasoner.isConsistent());
     }
 
-    public void testGetDataPropertyValues() throws Exception {
+    @Test void testGetDataPropertyValues() throws Exception {
         loadOntologyWithAxioms("DataPropertyAssertion(:dp :a \"RDFPlainLiteralwithEmptyLangTag@\"^^rdf:PlainLiteral) "
                 + "DataPropertyAssertion(:dp :a \"RDFPlainLiteralwithEmptyLangTag\") "
                 + "DataPropertyAssertion(:dp :a \"RDFPlainLiteralWithLangTag@en-gb\"^^rdf:PlainLiteral) "
@@ -217,7 +217,7 @@ public class OWLReasonerTest extends AbstractReasonerTest {
                 TL("01", "xsd:integer"), TL("1", "xsd:short"));
     }
 
-    public void testEquivalenceClasses() throws Exception {
+    @Test void testEquivalenceClasses() throws Exception {
         Configuration c = new Configuration();
         c.individualNodeSetPolicy = IndividualNodeSetPolicy.BY_SAME_AS;
         loadSameAsTest(c);
@@ -277,7 +277,7 @@ public class OWLReasonerTest extends AbstractReasonerTest {
         });
     }
 
-    public void testNonEquivalenceClasses() throws Exception {
+    @Test void testNonEquivalenceClasses() throws Exception {
         Configuration c = new Configuration();
         c.individualNodeSetPolicy = IndividualNodeSetPolicy.BY_NAME;
         loadSameAsTest(c);

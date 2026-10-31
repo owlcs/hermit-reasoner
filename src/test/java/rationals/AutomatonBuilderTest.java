@@ -1,16 +1,16 @@
 package rationals;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
-@SuppressWarnings("javadoc")
-public class AutomatonBuilderTest {
+import org.junit.jupiter.api.Test;
+
+class AutomatonBuilderTest {
     @Test
-    public void testStateLabellingYieldUniqueStates() {
+    void testStateLabellingYieldUniqueStates() {
         Automaton a = new Automaton();
         State s = a.state("init");
         State s2 = a.state("init");
-        assertSame("should be same object", s, s2);
-        assertEquals("objects should be equals", s, s2);
+        assertSame(s, s2, "should be same object");
+        assertEquals(s, s2, "objects should be equals");
     }
 }

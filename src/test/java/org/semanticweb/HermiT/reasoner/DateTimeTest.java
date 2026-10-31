@@ -1,23 +1,24 @@
 package org.semanticweb.HermiT.reasoner;
 
+import static org.junit.jupiter.api.Assertions.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.datatypes.datetime.BoundType;
 import org.semanticweb.HermiT.datatypes.datetime.DateTime;
 import org.semanticweb.HermiT.datatypes.datetime.DateTimeInterval;
 import org.semanticweb.HermiT.datatypes.datetime.IntervalType;
-@SuppressWarnings("javadoc")
-public class DateTimeTest extends AbstractReasonerTest {
 
-    public DateTimeTest(String name) {
-        super(name);
-    }
+//Unit tests for HermiT as a blackbox -- the quick subset.
+@Tag("AllQuickTests")
+class DateTimeTest extends AbstractReasonerTest {
 
-    public void testParsing() {
+    @Test void testParsing() {
         // Test positive dates
         assertParsing("1926-11-26T16:24:10.200Z");
         assertParsing("1926-11-26T24:00:00Z");
@@ -47,7 +48,7 @@ public class DateTimeTest extends AbstractReasonerTest {
         assertParsing("-1926-12-31T00:00:00+02:00");
     }
 
-    public void testExactIntervalsWithoutTZ1() {
+    @Test void testExactIntervalsWithoutTZ1() {
         DateTime time1 = getTime("1926-11-26T14:00:00");
         DateTime time2 = getTime("1926-11-26T14:00:00Z");
         DateTimeInterval interval = wihtoutTZ(time1);
@@ -57,7 +58,7 @@ public class DateTimeTest extends AbstractReasonerTest {
         assertElements(time1, interval, time1);
     }
 
-    public void testExactIntervalsWithoutTZ2() {
+    @Test void testExactIntervalsWithoutTZ2() {
         DateTime time1 = getTime("1926-11-26T24:00:00");
         DateTime time2 = getTime("1926-11-27T00:00:00");
         assertEquals(time1.getTimeOnTimeline(), time2.getTimeOnTimeline());
@@ -70,7 +71,7 @@ public class DateTimeTest extends AbstractReasonerTest {
         assertElements(time1, interval, time1, time2);
     }
 
-    public void testExactIntervalsWithTZ1() throws Exception {
+    @Test void testExactIntervalsWithTZ1() throws Exception {
         DateTime time1 = getTime("1926-11-26T04:00:01Z");
         DateTime time2 = getTime("1926-11-26T04:00:01");
         DateTimeInterval interval = wihtTZ(time1);
@@ -80,7 +81,7 @@ public class DateTimeTest extends AbstractReasonerTest {
         assertElements(time1, interval, loadDateTimes("res/datetime-1.txt"));
     }
 
-    public void testExactIntervalsWithTZ2() throws Exception {
+    @Test void testExactIntervalsWithTZ2() throws Exception {
         DateTime time1 = getTime("1926-11-26T11:00:00Z");
         DateTime time2 = getTime("1926-11-26T11:00:00");
         DateTimeInterval interval = wihtTZ(time1);
@@ -90,7 +91,7 @@ public class DateTimeTest extends AbstractReasonerTest {
         assertElements(time1, interval, loadDateTimes("res/datetime-2.txt"));
     }
 
-    public void testExactIntervalsWithTZ3() throws Exception {
+    @Test void testExactIntervalsWithTZ3() throws Exception {
         DateTime time1 = getTime("-1926-11-26T11:00:00Z");
         DateTime time2 = getTime("-1926-11-26T11:00:00");
         DateTimeInterval interval = wihtTZ(time1);
@@ -100,17 +101,17 @@ public class DateTimeTest extends AbstractReasonerTest {
         assertElements(time1, interval, loadDateTimes("res/datetime-3.txt"));
     }
 
-    public void testFinite1_1() throws Exception {
+    @Test void testFinite1_1() throws Exception {
         assertDRSatisfiable(true, 2, DR("xsd:dateTime", "xsd:minInclusive", DATE("1965-04-15T00:00:00"),
                 "xsd:maxInclusive", DATE("1965-04-15T00:00:00")));
     }
 
-    public void testFinite1_2() throws Exception {
+    @Test void testFinite1_2() throws Exception {
         assertDRSatisfiable(false, 3, DR("xsd:dateTime", "xsd:minInclusive", DATE("1965-04-15T00:00:00"),
                 "xsd:maxInclusive", DATE("1965-04-15T00:00:00")));
     }
 
-    public void testFinite2_1() throws Exception {
+    @Test void testFinite2_1() throws Exception {
         assertDRSatisfiable(true, 4,
                 DR("xsd:dateTime", "xsd:minInclusive", DATE("1965-04-15T00:00:00"), "xsd:maxInclusive",
                         DATE("1965-05-01T00:00:00")),
@@ -118,7 +119,7 @@ public class DateTimeTest extends AbstractReasonerTest {
                         DATE("1965-05-01T00:00:00"))));
     }
 
-    public void testFinite2_2() throws Exception {
+    @Test void testFinite2_2() throws Exception {
         assertDRSatisfiable(false, 5,
                 DR("xsd:dateTime", "xsd:minInclusive", DATE("1965-04-15T00:00:00"), "xsd:maxInclusive",
                         DATE("1965-05-01T00:00:00")),
@@ -126,32 +127,32 @@ public class DateTimeTest extends AbstractReasonerTest {
                         DATE("1965-05-01T00:00:00"))));
     }
 
-    public void testInfinite_1() throws Exception {
+    @Test void testInfinite_1() throws Exception {
         assertDRSatisfiable(true, 100, DR("xsd:dateTime", "xsd:minInclusive", DATE("1965-04-15T00:00:00"),
                 "xsd:maxInclusive", DATE("1965-05-01T00:00:00.001")));
     }
 
-    public void testInfinite_2() throws Exception {
+    @Test void testInfinite_2() throws Exception {
         assertDRSatisfiable(true, 100, DR("xsd:dateTime", "xsd:minInclusive", DATE("1965-04-15T00:00:00Z"),
                 "xsd:maxInclusive", DATE("1965-05-01T00:00:00.001Z")));
     }
 
-    public void testMizedTZs_1() throws Exception {
+    @Test void testMizedTZs_1() throws Exception {
         assertDRSatisfiable(false, DR("xsd:dateTime", "xsd:minInclusive", DATE("1965-04-15T00:00:00"),
                 "xsd:maxInclusive", DATE("1965-04-15T00:00:01Z")));
     }
 
-    public void testMizedTZs_2() throws Exception {
+    @Test void testMizedTZs_2() throws Exception {
         assertDRSatisfiable(false, DR("xsd:dateTime", "xsd:minInclusive", DATE("1965-04-15T00:00:00"),
                 "xsd:maxInclusive", DATE("1965-04-15T00:00:00-14:00")));
     }
 
-    public void testMizedTZs_3() throws Exception {
+    @Test void testMizedTZs_3() throws Exception {
         assertDRSatisfiable(true, 100, DR("xsd:dateTime", "xsd:minInclusive", DATE("1965-04-15T00:00:00"),
                 "xsd:maxInclusive", DATE("1965-04-15T00:00:00.001-14:00")));
     }
 
-    public void testMember() throws Exception {
+    @Test void testMember() throws Exception {
         assertDRSatisfiable(true,
                 DR("xsd:dateTime", "xsd:minInclusive", DATE("1965-04-15T00:00:00Z"), "xsd:maxInclusive",
                         DATE("1965-05-01T00:00:00Z")),

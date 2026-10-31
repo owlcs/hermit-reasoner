@@ -23,9 +23,9 @@ import static org.semanticweb.owlapi.util.OWLAPIStreamUtils.asList;
 import java.io.File;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.params.provider.Arguments;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.StringDocumentSource;
@@ -44,8 +44,8 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.search.EntitySearcher;
 
 import com.google.common.collect.Multimap;
-@SuppressWarnings("javadoc")
-public class WGTestDescriptor {
+
+class WGTestDescriptor {
     protected static final IRI TEST_CASE_IRI = IRI.create(WGTestRegistry.URI_BASE + "TestCase");
 
     protected enum Status {
@@ -305,29 +305,28 @@ public class WGTestDescriptor {
         throw new InvalidWGTestException("Test " + testID + " has no conclusion ontology in a parsable format.");
     }
 
-    public void addTestsToSuite(TestSuite suite) {
-        addTestsToSuite(suite, true);
+    public void addTestsToSuite(TestType testType, List<Arguments> list) {
+        
+        addTestsToSuite(testType, list, true);
     }
 
-    public void addTestsToSuite(TestSuite suite, boolean useDisjunctionLearning) {
-        for (TestType testType : TestType.values()) {
-            Test test = getTest(testType, null, useDisjunctionLearning);
-            if (test != null)
-                suite.addTest(test);
-        }
+    public void addTestsToSuite(TestType testType, List<Arguments> list, boolean useDisjunctionLearning) {
+        Arguments test = getTest(testType, null, useDisjunctionLearning);
+        if (test != null)
+            list.add(test);
     }
 
-    public Test getTest(TestType testType, File dumpTestDataDirectory, boolean useDisjunctionLearning) {
+    public Arguments getTest(TestType testType, File dumpTestDataDirectory, boolean useDisjunctionLearning) {
         if (testTypes.contains(testType) && isDLTest()) {
             switch (testType) {
             case CONSISTENCY:
-                return new ConsistencyTest(this, true, dumpTestDataDirectory, useDisjunctionLearning);
+                return Arguments.of(this, true, dumpTestDataDirectory, useDisjunctionLearning);
             case INCONSISTENCY:
-                return new ConsistencyTest(this, false, dumpTestDataDirectory, useDisjunctionLearning);
+                return Arguments.of(this, false, dumpTestDataDirectory, useDisjunctionLearning);
             case POSITIVE_ENTAILMENT:
-                return new EntailmentTest(this, true, dumpTestDataDirectory, useDisjunctionLearning);
+                return Arguments.of(this, true, dumpTestDataDirectory, useDisjunctionLearning);
             case NEGATIVE_ENTAILMENT:
-                return new EntailmentTest(this, false, dumpTestDataDirectory, useDisjunctionLearning);
+                return Arguments.of(this, false, dumpTestDataDirectory, useDisjunctionLearning);
             case PROFILE_IDENTIFICATION:
                 break;
             default:

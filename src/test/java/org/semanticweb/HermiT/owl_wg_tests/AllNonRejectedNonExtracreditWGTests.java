@@ -19,21 +19,25 @@
 // ontologies folder from http://wiki.webont.org/exports/
 package org.semanticweb.HermiT.owl_wg_tests;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-@SuppressWarnings("javadoc")
-public class AllNonRejectedNonExtracreditWGTests {
-    public static Test suite() throws Exception {
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.params.provider.Arguments;
+import org.semanticweb.HermiT.owl_wg_tests.WGTestDescriptor.TestType;
+
+//OWL WG Non-Rejected Non-Extracredit Tests
+class AllNonRejectedNonExtracreditWGTests {
+    public static List<Arguments> arguments(TestType testtype) throws Exception {
+        List<Arguments> list=new ArrayList<>();
         WGTestRegistry wgTestRegistry = new WGTestRegistry();
-        TestSuite suite = new TestSuite("OWL WG Non-Rejected Non-Extracredit Tests");
         for (WGTestDescriptor wgTestDescriptor : wgTestRegistry.getTestDescriptors())
             if (wgTestDescriptor.isDLTest() && (wgTestDescriptor.status == WGTestDescriptor.Status.APPROVED
                     || wgTestDescriptor.status == WGTestDescriptor.Status.PROPOSED))
                 if (wgTestDescriptor.identifier.startsWith("WebOnt-description-logic-209")
                         || wgTestDescriptor.identifier.startsWith("WebOnt-description-logic-208"))
-                    wgTestDescriptor.addTestsToSuite(suite, false);
+                    wgTestDescriptor.addTestsToSuite(testtype, list, false);
                 else
-                    wgTestDescriptor.addTestsToSuite(suite);
-        return suite;
+                    wgTestDescriptor.addTestsToSuite(testtype, list, true);
+        return list;
     }
 }

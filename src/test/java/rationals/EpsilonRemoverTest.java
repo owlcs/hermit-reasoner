@@ -37,7 +37,9 @@ package rationals;
 
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 import rationals.transformations.EpsilonTransitionRemover;
 import rationals.transformations.Reducer;
 
@@ -45,19 +47,9 @@ import rationals.transformations.Reducer;
  * @author nono
  * @version $Id: EpsilonRemoverTest.java 2 2006-08-24 14:41:48Z oqube $
  */
-@SuppressWarnings("javadoc")
-public class EpsilonRemoverTest extends TestCase {
+class EpsilonRemoverTest {
 
-    /**
-     * Constructor for EspilonRemoverTest.
-     * 
-     * @param arg0
-     */
-    public EpsilonRemoverTest(String arg0) {
-        super(arg0);
-    }
-
-    public void testEpsilon() {
+    @Test void testEpsilon() {
         Automaton a = new Automaton();
         State s1 = a.addState(true, false);
         State s2 = a.addState(false, false);
@@ -76,7 +68,7 @@ public class EpsilonRemoverTest extends TestCase {
         b = new Reducer().transform(b);
     }
 
-    public void testEpsilon2() {
+    @Test void testEpsilon2() {
         Automaton a = new Automaton();
         State s1 = a.addState(true, false);
         State s2 = a.addState(false, false);
@@ -94,7 +86,7 @@ public class EpsilonRemoverTest extends TestCase {
         b = new Reducer().transform(b);
     }
 
-    public void testEpsilon3() {
+    @Test void testEpsilon3() {
         Automaton a = new Automaton();
         State s1 = a.addState(true, false);
         State s2 = a.addState(false, false);
@@ -114,7 +106,7 @@ public class EpsilonRemoverTest extends TestCase {
      */
     private static void assertNoEpsilon(Set<Transition> s) {
         for (Transition tr : s) {
-            assertNotNull("Transition " + tr + " labelled with epsilon", tr.label());
+            assertNotNull(tr.label(), "Transition " + tr + " labelled with epsilon");
         }
     }
 

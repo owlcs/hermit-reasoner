@@ -1,5 +1,8 @@
 package org.semanticweb.HermiT.reasoner;
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.AbstractOntologyTest;
 import org.semanticweb.HermiT.ReasonerFactory;
 import org.semanticweb.owlapi.model.IRI;
@@ -9,14 +12,11 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
-@SuppressWarnings("javadoc")
-public class RulesTest extends AbstractReasonerTest {
+//Unit tests for HermiT as a blackbox -- the quick subset.
+@Tag("AllQuickTests")
+class RulesTest extends AbstractReasonerTest {
 
-    public RulesTest(String name) {
-        super(name);
-    }
-
-    public void testSameAsInBody1() throws Exception {
+    @Test void testSameAsInBody1() throws Exception {
         String axioms = "Declaration(ObjectProperty(:r))\n" + "Declaration(ObjectProperty(:s))\n"
                 + "Declaration(ObjectProperty(:t))\n" + "Declaration(Class(:u))\n"
                 + "ObjectPropertyAssertion(:r :a :b)\n" + "ObjectPropertyAssertion(:s :a :c)\n"
@@ -35,7 +35,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testSameAsInBody2() throws Exception {
+    @Test void testSameAsInBody2() throws Exception {
         String axioms = "Declaration(ObjectProperty(:r))\n" + "Declaration(ObjectProperty(:s))\n"
                 + "Declaration(ObjectProperty(:t))\n" + "Declaration(Class(:u))\n"
                 + "ObjectPropertyAssertion(:r :a1 :b)\n" + "ObjectPropertyAssertion(:s :a2 :c)\n"
@@ -54,7 +54,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertABoxSatisfiable(true);
     }
 
-    public void testSameAsInBodyWithDataProperties() throws Exception {
+    @Test void testSameAsInBodyWithDataProperties() throws Exception {
         String axioms = "Declaration(DataProperty(:r))\n" + "Declaration(DataProperty(:s))\n"
                 + "Declaration(Class(:u))\n" + "DataPropertyAssertion(:r :a \"2\"^^xsd:integer)\n"
                 + "ClassAssertion(DataSomeValuesFrom(:s DatatypeRestriction(xsd:integer xsd:minInclusive \"2\"^^xsd:integer xsd:maxInclusive \"2\"^^xsd:integer)) :a)"
@@ -70,7 +70,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testDataPropertiesInBody() throws Exception {
+    @Test void testDataPropertiesInBody() throws Exception {
         String axioms = "Declaration(DataProperty(:r))\n" + "Declaration(DataProperty(:s))\n"
                 + "Declaration(Class(:u))\n" + "DataPropertyAssertion(:r :a \"2\"^^xsd:integer)\n"
                 + "ClassAssertion(DataSomeValuesFrom(:s DatatypeRestriction(xsd:integer xsd:minInclusive \"2\"^^xsd:integer xsd:maxInclusive \"2\"^^xsd:integer)) :a)"
@@ -85,7 +85,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testIndividualsInRules() throws Exception {
+    @Test void testIndividualsInRules() throws Exception {
         String axioms = "Declaration(NamedIndividual(:a))\n" + "Declaration(NamedIndividual(:b))\n"
                 + "Declaration(Class(:c))\n" + "Declaration(Class(:d))\n" + "ClassAssertion(:c :a)\n"
                 + "ClassAssertion(ObjectComplementOf(:d) :b)\n"
@@ -97,7 +97,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testRuleNonSimple() throws Exception {
+    @Test void testRuleNonSimple() throws Exception {
         String axioms = "Declaration(NamedIndividual(:a))\n" + "Declaration(NamedIndividual(:b))\n"
                 + "Declaration(ObjectProperty(:t))\n" + "Declaration(ObjectProperty(:s))\n"
                 + "TransitiveObjectProperty(:t)\n"
@@ -120,7 +120,7 @@ public class RulesTest extends AbstractReasonerTest {
         // assertTrue(m_reasoner.hasObjectPropertyRelationship(a, s, b));
     }
 
-    public void testRuleNotAxiom() throws Exception {
+    @Test void testRuleNotAxiom() throws Exception {
         String axioms = "Declaration(NamedIndividual(:a))\n" + "Declaration(NamedIndividual(:b))\n"
                 + "Declaration(Class(:A))\n" + "Declaration(Class(:B))\n" + "ClassAssertion(:A :a)\n"
                 + "ClassAssertion(:A :b)\n"
@@ -142,7 +142,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertTrue(m_reasoner.getInstances(A, false).containsEntity(a));
     }
 
-    public void testSimpleRule2() throws Exception {
+    @Test void testSimpleRule2() throws Exception {
         String axioms = "Declaration(NamedIndividual(:sensor))" + "Declaration(NamedIndividual(:kitchen))"
                 + "Declaration(NamedIndividual(:pda))" + "Declaration(Class(:BluetoothSensor))"
                 + "Declaration(Class(:Location))" + "Declaration(Class(:BluetoothDevice))"
@@ -169,7 +169,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertTrue(owlReasoner.getObjectPropertyValues(pda, hasLocation).containsEntity(k));
     }
 
-    public void testSimpleRule() throws Exception {
+    @Test void testSimpleRule() throws Exception {
         String axioms = "SubClassOf(:A :B)\n" + "ClassAssertion(:A :a)\n" + "ClassAssertion(:D :b)\n"
         // B(x) -> C(x)
                 + "DLSafeRule(Body(ClassAtom(:B Variable(:x))) Head(ClassAtom(:C Variable(:x))))";
@@ -184,7 +184,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertTrue(!m_reasoner.getInstances(C, false).containsEntity(b));
     }
 
-    public void testRuleWithConstants() throws Exception {
+    @Test void testRuleWithConstants() throws Exception {
         String axioms = "SubClassOf(:A :B)" + "ClassAssertion(:A :a)" + "ClassAssertion(:D :b)"
         // B(x) -> C(a)
                 + "DLSafeRule(Body(ClassAtom(:B Variable(:x))) Head(ClassAtom(:C :a)))";
@@ -198,7 +198,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertTrue(!m_reasoner.getInstances(C, false).containsEntity(b));
     }
 
-    public void testRuleWithConstants2() throws Exception {
+    @Test void testRuleWithConstants2() throws Exception {
         String axioms = "ClassAssertion(ObjectSomeValuesFrom(:r owl:Thing) :a)" + "ObjectPropertyAssertion(:r :a :b)"
         // r(x, y) -> s(x, y)
                 + "DLSafeRule(Body(ObjectPropertyAtom(:r Variable(:x) Variable(:y))) Head(ObjectPropertyAtom(:s Variable(:x) Variable(:y))))"
@@ -229,7 +229,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertTrue(result.isSingleton() && result.containsEntity(b));
     }
 
-    public void testRuleWithDatatypes() throws Exception {
+    @Test void testRuleWithDatatypes() throws Exception {
         String axioms = "DataPropertyAssertion(:dp :a \"18\"^^xsd:short)"
                 + "DataPropertyAssertion(:dp :b \"17\"^^xsd:short)"
                 // dp(x, "18"^^xsd:integer) -> C(x)
@@ -243,7 +243,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.getInstances(C, false).containsEntity(b));
     }
 
-    public void testRuleWithDatatypes2() throws Exception {
+    @Test void testRuleWithDatatypes2() throws Exception {
         String axioms = "ClassAssertion(DataSomeValuesFrom(:dp DatatypeRestriction(xsd:integer xsd:minInclusive \"10\"^^xsd:integer)) :a)"
                 + "DataPropertyAssertion(:dp :b \"10\"^^xsd:short)"
                 + "DataPropertyAssertion(:dp :c \"25\"^^xsd:integer)" + "ClassAssertion(ObjectComplementOf(:C) :a)"
@@ -269,7 +269,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertTrue(!m_reasoner.getInstances(D, false).containsEntity(c));
     }
 
-    public void testRuleWithFreshIndividuals() throws Exception {
+    @Test void testRuleWithFreshIndividuals() throws Exception {
         String axioms = "ClassAssertion(:A :a)"
                 // A(x) -> B(b)
                 + "DLSafeRule(Body(ClassAtom(:A Variable(:x))) Head(ClassAtom(:B :b)))"
@@ -287,7 +287,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertTrue(!m_reasoner.getInstances(B, false).containsEntity(a));
     }
 
-    public void testAddingFactsByRules() throws Exception {
+    @Test void testAddingFactsByRules() throws Exception {
         String axioms = "ClassAssertion(:A :a)"
                 // -> B(a)
                 + "DLSafeRule(Body() Head(ClassAtom(:B :a)))"
@@ -325,7 +325,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertTrue(m_reasoner.getInstances(E, false).containsEntity(e));
     }
 
-    public void testLloydTopor() throws Exception {
+    @Test void testLloydTopor() throws Exception {
         String axioms = "ClassAssertion(:A :a)" + "ClassAssertion(:B :b)"
         // A(x) -> B(x) /\ C(x)
                 + "DLSafeRule(Body(ClassAtom(:A Variable(:x))) Head(ClassAtom(:B Variable(:x)) ClassAtom(:C Variable(:x))))";
@@ -345,7 +345,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertTrue(!m_reasoner.getInstances(C, false).containsEntity(b));
     }
 
-    public void testDataRangeSafety() throws Exception {
+    @Test void testDataRangeSafety() throws Exception {
         String axioms = "ClassAssertion(:A :a)"
                 // A(x) /\ xsd:integer(y) -> dp(x, y)
                 + "DLSafeRule(Body(ClassAtom(:A Variable(:x)) DataRangeAtom(xsd:integer Variable(:y))) Head(DataPropertyAtom(:dp Variable(:x) Variable(:y))))";
@@ -357,7 +357,7 @@ public class RulesTest extends AbstractReasonerTest {
         }
     }
 
-    public void testSeveralVars() throws Exception {
+    @Test void testSeveralVars() throws Exception {
         String axioms = "ClassAssertion(:A :a) ClassAssertion(:B :b) ClassAssertion(:C :c) ClassAssertion(:D :d) ClassAssertion(:E :e)"
                 + "ObjectPropertyAssertion(:rab :a :b) ObjectPropertyAssertion(:rac :a :c) ObjectPropertyAssertion(:rcd :c :d)"
                 // A(xa) /\ B(b) /\ rab(xa, xb) /\ rac(xa, xc) /\ rcd(xc, xd) /\
@@ -404,7 +404,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertTrue(result.isSingleton());
     }
 
-    public void testPositiveBodyDataRange() throws Exception {
+    @Test void testPositiveBodyDataRange() throws Exception {
         String axioms = "ClassAssertion(:A :a) SubClassOf(:A DataSomeValuesFrom(:dp DatatypeRestriction(xsd:integer xsd:minInclusive \"6\"^^xsd:integer xsd:maxInclusive \"9\"^^xsd:integer)))"
                 // dp(x, y) /\ ((xsd:integer >= 5) and (xsd:decimal <= 10))(y)
                 // /\ (xsd:int <= 9)(y) -> B(x)
@@ -418,7 +418,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertTrue(m_reasoner.getInstances(B, false).containsEntity(a));
     }
 
-    public void testNegativeBodyDataRange() throws Exception {
+    @Test void testNegativeBodyDataRange() throws Exception {
         String axioms = "ClassAssertion(:A :a) ClassAssertion(:B :b)"
                 + "SubClassOf(:A DataSomeValuesFrom(:dp DatatypeRestriction(xsd:integer xsd:minInclusive \"6\"^^xsd:integer xsd:maxInclusive \"9\"^^xsd:integer)))"
                 + "SubClassOf(:B DataHasValue(:dp \"abc\"))"
@@ -437,7 +437,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertTrue(m_reasoner.getInstances(C, false).containsEntity(b));
     }
 
-    public void testNegDRInHead() throws Exception {
+    @Test void testNegDRInHead() throws Exception {
         String axioms = "ClassAssertion(:A :a)"
                 + "SubClassOf(:A DataSomeValuesFrom(:dp DatatypeRestriction(xsd:integer xsd:minInclusive \"6\"^^xsd:integer xsd:maxInclusive \"9\"^^xsd:integer)))"
                 // dp(x, y) -> not(xsd:short >= 1)(y)
@@ -449,7 +449,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertTrue(!m_reasoner.isConsistent());
     }
 
-    public void testSameAs() throws Exception {
+    @Test void testSameAs() throws Exception {
         String axioms = "ClassAssertion(:A :a) " + "ClassAssertion(:B :b) " + "DisjointClasses(:A :B) "
                 + "ObjectPropertyAssertion(:r :a :b)"
                 // r(x, y) -> SameAs(x, y)
@@ -459,7 +459,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertTrue(!m_reasoner.isConsistent());
     }
 
-    public void testDifferentFrom() throws Exception {
+    @Test void testDifferentFrom() throws Exception {
         String axioms = "ObjectPropertyAssertion(:f :a :b)" + "ObjectPropertyAssertion(:f :a :c)"
                 + "FunctionalObjectProperty(:f)"
                 // f(x, y) /\ f(x, z) -> DifferentFrom(y, z)
@@ -469,7 +469,7 @@ public class RulesTest extends AbstractReasonerTest {
         assertTrue(!m_reasoner.isConsistent());
     }
 
-    public void testDiffrentFrom2() throws Exception {
+    @Test void testDiffrentFrom2() throws Exception {
         String axioms = "ClassAssertion(:A :a) ClassAssertion(:B :b) DisjointClasses(:A :B) ObjectPropertyAssertion(:r :a :b)"
                 // r(x, y) /\ DifferentFrom(x, y)-> C(x)
                 + "DLSafeRule(Body(" + "ObjectPropertyAtom(:r Variable(:x) Variable(:y)) "

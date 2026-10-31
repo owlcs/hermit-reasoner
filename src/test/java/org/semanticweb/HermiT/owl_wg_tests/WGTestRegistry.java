@@ -27,8 +27,8 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-@SuppressWarnings("javadoc")
-public class WGTestRegistry {
+
+class WGTestRegistry {
     public static String URI_BASE = "http://www.w3.org/2007/OWL/testOntology#";
     public static String TEST_ID_PREFIX = "http://owl.semanticweb.org/id/";
 

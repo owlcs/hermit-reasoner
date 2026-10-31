@@ -1,16 +1,19 @@
 package org.semanticweb.HermiT.bugs;
 
-import static org.junit.Assert.assertFalse;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import org.junit.jupiter.api.Disabled;
 import org.semanticweb.HermiT.ReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.StringDocumentSource;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
-@Ignore("to fix")
-public class InversePropertiesBadInferenceTest {
+
+@Disabled("to fix")
+class InversePropertiesBadInferenceTest {
+
     @Test
     public void should() throws OWLOntologyCreationException {
         StringDocumentSource source = new StringDocumentSource(

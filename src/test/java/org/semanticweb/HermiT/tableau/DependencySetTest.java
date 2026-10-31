@@ -1,22 +1,16 @@
 package org.semanticweb.HermiT.tableau;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.Assert.assertNotEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-@SuppressWarnings("javadoc")
-public class DependencySetTest extends TestCase {
-    protected DependencySetFactory m_factory;
+//Test for the HermiT internals
+@Tag("tableau")
+class DependencySetTest  {
+    protected DependencySetFactory m_factory = new DependencySetFactory();
 
-    public DependencySetTest(String name) {
-        super(name);
-    }
-
-    @Override
-    protected void setUp() {
-        m_factory = new DependencySetFactory();
-    }
-
-    public void testDependencySet1() {
+    @Test void testDependencySet1() {
         PermanentDependencySet set = m_factory.emptySet();
         assertDSEquals(set);
         assertTrue(set.isEmpty());
@@ -41,7 +35,7 @@ public class DependencySetTest extends TestCase {
         assertDSEquals(set, 0);
     }
 
-    public void testDependencySet2() {
+    @Test void testDependencySet2() {
         PermanentDependencySet set1 = m_factory.emptySet();
         set1 = m_factory.addBranchingPoint(set1, 10);
         set1 = m_factory.addBranchingPoint(set1, 3);
@@ -60,7 +54,7 @@ public class DependencySetTest extends TestCase {
         assertDSEquals(set3, 1, 3, 10, 14, 15, 17);
     }
 
-    public void testDependencySet3() {
+    @Test void testDependencySet3() {
         PermanentDependencySet set1 = m_factory.emptySet();
         set1 = m_factory.addBranchingPoint(set1, 10);
         set1 = m_factory.addBranchingPoint(set1, 3);

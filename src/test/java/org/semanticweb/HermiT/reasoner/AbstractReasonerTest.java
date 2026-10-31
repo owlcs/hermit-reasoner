@@ -1,13 +1,14 @@
 package org.semanticweb.HermiT.reasoner;
 
 import static org.semanticweb.owlapi.util.OWLAPIStreamUtils.asSet;
-
+import static org.junit.jupiter.api.Assertions.*;
 import java.io.CharArrayWriter;
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.jupiter.api.AfterEach;
 import org.semanticweb.HermiT.AbstractOntologyTest;
 import org.semanticweb.HermiT.Configuration;
 import org.semanticweb.HermiT.EntailmentChecker;
@@ -32,13 +33,8 @@ import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 public abstract class AbstractReasonerTest extends AbstractOntologyTest {
     protected Reasoner m_reasoner;
 
-    public AbstractReasonerTest(String name) {
-        super(name);
-    }
-
-    @Override
+    @AfterEach
     protected void tearDown() {
-        super.tearDown();
         m_reasoner = null;
         m_dataFactory = null;
         m_ontology = null;

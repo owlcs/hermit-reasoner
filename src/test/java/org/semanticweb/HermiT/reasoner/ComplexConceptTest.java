@@ -1,5 +1,7 @@
 package org.semanticweb.HermiT.reasoner;
 
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -10,14 +12,12 @@ import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
-@SuppressWarnings("javadoc")
-public class ComplexConceptTest extends AbstractReasonerTest {
 
-    public ComplexConceptTest(String name) {
-        super(name);
-    }
+//Unit tests for HermiT as a blackbox -- the quick subset.
+@Tag("AllQuickTests")
+class ComplexConceptTest extends AbstractReasonerTest {
 
-    public void testConceptWithDatatypes() throws Exception {
+    @Test void testConceptWithDatatypes() throws Exception {
         StringBuilder buffer = new StringBuilder();
         buffer.append("Declaration(NamedIndividual(:a))");
         buffer.append("Declaration(Class(:A))");
@@ -44,7 +44,7 @@ public class ComplexConceptTest extends AbstractReasonerTest {
         assertInstanceOf(desc, a, true);
     }
 
-    public void testConceptWithDatatypes2() throws Exception {
+    @Test void testConceptWithDatatypes2() throws Exception {
         StringBuilder buffer = new StringBuilder();
         buffer.append("Declaration(NamedIndividual(:a))");
         buffer.append("Declaration(Class(:A))");
@@ -62,7 +62,7 @@ public class ComplexConceptTest extends AbstractReasonerTest {
         assertInstanceOf(desc, a, false);
     }
 
-    public void testConceptWithNominals() throws Exception {
+    @Test void testConceptWithNominals() throws Exception {
         StringBuilder buffer = new StringBuilder();
         buffer.append("Declaration(NamedIndividual(:a))");
         buffer.append("Declaration(NamedIndividual(:b))");
@@ -92,7 +92,7 @@ public class ComplexConceptTest extends AbstractReasonerTest {
         assertInstanceOf(desc, o, true);
     }
 
-    public void testConceptWithNominals2() throws Exception {
+    @Test void testConceptWithNominals2() throws Exception {
         StringBuilder buffer = new StringBuilder();
         buffer.append("Declaration(NamedIndividual(:a))");
         buffer.append("Declaration(NamedIndividual(:b))");
@@ -119,7 +119,7 @@ public class ComplexConceptTest extends AbstractReasonerTest {
         assertInstanceOf(desc, b, true);
     }
 
-    public void testConceptWithNominals3() throws Exception {
+    @Test void testConceptWithNominals3() throws Exception {
         StringBuilder buffer = new StringBuilder();
         buffer.append("Declaration(NamedIndividual(:a))");
         buffer.append("Declaration(NamedIndividual(:b))");
@@ -141,7 +141,7 @@ public class ComplexConceptTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testConceptWithNominals4() throws Exception {
+    @Test void testConceptWithNominals4() throws Exception {
         StringBuilder buffer = new StringBuilder();
         buffer.append("Declaration(NamedIndividual(:a))");
         buffer.append("Declaration(NamedIndividual(:b))");
@@ -159,7 +159,7 @@ public class ComplexConceptTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testConceptWithNominals5() throws Exception {
+    @Test void testConceptWithNominals5() throws Exception {
         StringBuilder buffer = new StringBuilder();
         buffer.append("Declaration(NamedIndividual(:a))");
         buffer.append("Declaration(NamedIndividual(:b))");
@@ -179,7 +179,7 @@ public class ComplexConceptTest extends AbstractReasonerTest {
         assertSubsumedBy(df.getOWLObjectOneOf(b), B, true);
     }
 
-    public void testJustifications() throws Exception {
+    @Test void testJustifications() throws Exception {
         // test for Matthew's justifications that HermiT originally didn't
         // answer correctly
         StringBuilder buffer = new StringBuilder();

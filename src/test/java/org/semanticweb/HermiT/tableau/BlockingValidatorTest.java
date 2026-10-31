@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Ignore;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.blocking.AnywhereValidatedBlocking;
 import org.semanticweb.HermiT.blocking.BlockingStrategy;
 import org.semanticweb.HermiT.blocking.BlockingValidator;
@@ -23,9 +25,8 @@ import org.semanticweb.HermiT.model.DLOntology;
 import org.semanticweb.HermiT.model.InverseRole;
 import org.semanticweb.HermiT.model.Variable;
 
-@Ignore
-@SuppressWarnings("javadoc")
-public class BlockingValidatorTest extends AbstractReasonerInternalsTest {
+@Disabled
+class BlockingValidatorTest extends AbstractReasonerInternalsTest {
     protected final AtomicConcept A = AtomicConcept.create("A");
     protected final AtomicConcept B = AtomicConcept.create("B");
     protected final AtomicConcept C = AtomicConcept.create("C");
@@ -55,11 +56,7 @@ public class BlockingValidatorTest extends AbstractReasonerInternalsTest {
     protected BlockingStrategy m_blockingStrategy;
     protected ExtensionManager m_extensionManager;
 
-    public BlockingValidatorTest(String name) {
-        super(name);
-    }
-
-    public void testOneInvalidBlock() {
+    @Test void testOneInvalidBlock() {
         Set<DLClause> dlClauses = new HashSet<>();
         DLClause cl = DLClause.create(new Atom[] { Atom.create(ATLEAST2RA, X) }, new Atom[] { Atom.create(B, X) });
         dlClauses.add(cl);
@@ -179,7 +176,7 @@ public class BlockingValidatorTest extends AbstractReasonerInternalsTest {
         assertTrue(validator.isBlockValid(a121));
     }
 
-    public void testInvalidBlockWithAnnotatedEqualities() {
+    @Test void testInvalidBlockWithAnnotatedEqualities() {
         Set<DLClause> dlClauses = new HashSet<>();
         DLClause cl = DLClause.create(new Atom[] { Atom.create(ATLEAST1SB, X) }, new Atom[] { Atom.create(A, X) });
         dlClauses.add(cl);

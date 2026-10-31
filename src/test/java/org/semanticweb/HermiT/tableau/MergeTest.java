@@ -1,9 +1,13 @@
 package org.semanticweb.HermiT.tableau;
 
+import static org.junit.jupiter.api.Assertions.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.blocking.AnywhereBlocking;
 import org.semanticweb.HermiT.blocking.BlockingSignatureCache;
 import org.semanticweb.HermiT.blocking.BlockingStrategy;
@@ -22,8 +26,9 @@ import org.semanticweb.HermiT.model.DLOntology;
 import org.semanticweb.HermiT.model.Equality;
 import org.semanticweb.HermiT.model.Inequality;
 import org.semanticweb.HermiT.model.Variable;
-@SuppressWarnings("javadoc")
-public class MergeTest extends AbstractReasonerInternalsTest {
+//Test for the HermiT internals
+@Tag("tableau")
+class MergeTest extends AbstractReasonerInternalsTest {
     protected static final AtomicConcept A = AtomicConcept.create("A");
     protected static final AtomicConcept B = AtomicConcept.create("B");
     protected static final AtomicConcept C = AtomicConcept.create("C");
@@ -45,11 +50,7 @@ public class MergeTest extends AbstractReasonerInternalsTest {
     protected Tableau m_tableau;
     protected ExtensionManager m_extensionManager;
 
-    public MergeTest(String name) {
-        super(name);
-    }
-
-    @Override
+    @BeforeEach
     protected void setUp() {
         DirectBlockingChecker directBlockingChecker = new PairWiseDirectBlockingChecker();
         BlockingSignatureCache blockingSignatureCache = new BlockingSignatureCache(directBlockingChecker);
@@ -60,7 +61,7 @@ public class MergeTest extends AbstractReasonerInternalsTest {
         m_extensionManager = m_tableau.getExtensionManager();
     }
 
-    public void testMergeAndBacktrack() {
+    @Test void testMergeAndBacktrack() {
         DependencySet emptySet = m_tableau.getDependencySetFactory().emptySet();
         Node a = m_tableau.createNewNINode(emptySet);
         Node b = m_tableau.createNewNINode(emptySet);

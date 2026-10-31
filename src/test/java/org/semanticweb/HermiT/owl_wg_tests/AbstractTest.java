@@ -23,11 +23,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
 
-import junit.framework.AssertionFailedError;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
+import org.opentest4j.AssertionFailedError;
 
 import org.semanticweb.owlapi.functional.renderer.OWLFunctionalSyntaxRenderer;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.semanticweb.HermiT.Configuration;
 import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -37,7 +40,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.reasoner.ReasonerInterruptedException;
 import org.semanticweb.owlapi.util.SimpleIRIMapper;
 @SuppressWarnings("javadoc")
-public abstract class AbstractTest extends TestCase {
+public abstract class AbstractTest {
     public static int TIMEOUT = 300000;
 
     protected File m_dumpTestDataDirectory;
@@ -47,32 +50,25 @@ public abstract class AbstractTest extends TestCase {
     protected Reasoner m_reasoner;
     protected boolean m_useDisjunctionLearning;
 
-    public AbstractTest(String name, WGTestDescriptor wgTestDescriptor, File dumpTestDataDirectory) {
-        this(name, wgTestDescriptor, dumpTestDataDirectory, true);
-    }
-
-    public AbstractTest(String name, WGTestDescriptor wgTestDescriptor, File dumpTestDataDirectory,
+    public void prepareTest(String name, WGTestDescriptor wgTestDescriptor, File dumpTestDataDirectory,
             boolean useDisjunctionLearning) {
-        super(name);
         m_wgTestDescriptor = wgTestDescriptor;
         m_dumpTestDataDirectory = dumpTestDataDirectory;
         m_useDisjunctionLearning = useDisjunctionLearning;
     }
 
-    @Override
-    protected void setUp() throws Exception {
-        m_ontologyManager = OWLManager.createOWLOntologyManager();
-        registerImportedReosurces();
-        m_premiseOntology = m_wgTestDescriptor.getPremiseOntology(m_ontologyManager);
-    }
-
-    protected void registerMappingToResource(String ontologyIRI, String physicalResource) throws Exception {
-        IRI physicalIRI = IRI.create(getClass().getResource(physicalResource).toURI());
+    protected void registerMappingToResource(String ontologyIRI, String physicalResource)  {
+        IRI physicalIRI;
+        try {
+            physicalIRI = IRI.create(getClass().getResource(physicalResource).toURI());
+        } catch (URISyntaxException e) {
+          throw new RuntimeException(e);
+        }
         IRI logicalIRI = IRI.create(ontologyIRI);
         m_ontologyManager.getIRIMappers().add(new SimpleIRIMapper(logicalIRI, physicalIRI));
     }
 
-    protected void registerImportedReosurces() throws Exception {
+    protected void registerImportedReosurces() {
         registerMappingToResource("http://www.w3.org/2002/03owlt/miscellaneous/consistent001",
                 "ontologies/consistent001.rdf");
         registerMappingToResource("http://www.w3.org/2002/03owlt/miscellaneous/consistent002",
@@ -80,8 +76,8 @@ public abstract class AbstractTest extends TestCase {
         registerMappingToResource("http://www.w3.org/2002/03owlt/imports/support011-A", "ontologies/support011-A.rdf");
     }
 
-    @Override
-    protected void tearDown() {
+    @AfterEach
+    void tearDown() {
         m_wgTestDescriptor = null;
         m_ontologyManager = null;
         m_premiseOntology = null;
@@ -89,8 +85,7 @@ public abstract class AbstractTest extends TestCase {
         m_dumpTestDataDirectory = null;
     }
 
-    @Override
-    public void runTest() throws Throwable {
+    public void runTest() throws Exception {
         dumpTestData();
         m_reasoner = new Reasoner(getConfiguration(), m_premiseOntology, null);
         InterruptTimer timer = new InterruptTimer(TIMEOUT, m_reasoner);
@@ -105,7 +100,7 @@ public abstract class AbstractTest extends TestCase {
             fail("Test ran out of memory. "+e.getMessage());
         } catch (AssertionFailedError e) {
             fail("Test failed: " + e.getMessage());
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw e;
         } finally {
             timer.stopTiming();

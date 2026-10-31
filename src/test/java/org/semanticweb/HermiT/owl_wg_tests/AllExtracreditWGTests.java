@@ -19,16 +19,20 @@
 // ontologies folder from http://wiki.webont.org/exports/
 package org.semanticweb.HermiT.owl_wg_tests;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-@SuppressWarnings("javadoc")
-public class AllExtracreditWGTests {
-    public static Test suite() throws Exception {
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.params.provider.Arguments;
+import org.semanticweb.HermiT.owl_wg_tests.WGTestDescriptor.TestType;
+
+//OWL WG Extracredit Tests
+class AllExtracreditWGTests {
+    public static List<Arguments> arguments(TestType testtype) throws Exception {
+        List<Arguments> list=new ArrayList<>();
         WGTestRegistry wgTestRegistry = new WGTestRegistry();
-        TestSuite suite = new TestSuite("OWL WG Extracredit Tests");
         for (WGTestDescriptor wgTestDescriptor : wgTestRegistry.getTestDescriptors())
             if (wgTestDescriptor.isDLTest() && wgTestDescriptor.status == WGTestDescriptor.Status.EXTRACREDIT)
-                wgTestDescriptor.addTestsToSuite(suite);
-        return suite;
+                wgTestDescriptor.addTestsToSuite(testtype, list);
+        return list;
     }
 }

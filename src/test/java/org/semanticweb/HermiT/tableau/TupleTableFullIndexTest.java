@@ -1,20 +1,16 @@
 package org.semanticweb.HermiT.tableau;
-@SuppressWarnings("javadoc")
-public class TupleTableFullIndexTest extends AbstractReasonerInternalsTest {
-    protected TupleTable m_tupleTable;
-    protected TupleTableFullIndex m_index;
 
-    public TupleTableFullIndexTest(String name) {
-        super(name);
-    }
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-    @Override
-    protected void setUp() {
-        m_tupleTable = new TupleTable(2);
-        m_index = new TupleTableFullIndex(m_tupleTable, 2);
-    }
+//Test for the HermiT internals
+@Tag("tableau")
+class TupleTableFullIndexTest extends AbstractReasonerInternalsTest {
+    protected TupleTable m_tupleTable = new TupleTable(2);
+    protected TupleTableFullIndex m_index = new TupleTableFullIndex(m_tupleTable, 2);
 
-    public void testIndex() {
+    @Test void testIndex() {
         assertAdd(0, "a", "b");
         assertAdd(1, "b", "c");
         assertAdd(2, "c", "d");
@@ -43,7 +39,7 @@ public class TupleTableFullIndexTest extends AbstractReasonerInternalsTest {
         assertEquals(4, m_index.getTupleIndex(T("g", "h")));
     }
 
-    public void testLotsOfData() {
+    @Test void testLotsOfData() {
         String[][] tuples = new String[40000][];
         for (int index = 0; index < tuples.length; index++)
             tuples[index] = new String[] { "a" + index, "b" + index };

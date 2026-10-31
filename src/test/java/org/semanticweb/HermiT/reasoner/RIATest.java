@@ -1,12 +1,15 @@
 package org.semanticweb.HermiT.reasoner;
-@SuppressWarnings("javadoc")
-public class RIATest extends AbstractReasonerTest {
 
-    public RIATest(String name) {
-        super(name);
-    }
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-    public void testInverseAndChain() throws Exception {
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+//Unit tests for HermiT as a blackbox -- the quick subset.
+@Tag("AllQuickTests")
+class RIATest extends AbstractReasonerTest {
+
+    @Test void testInverseAndChain() throws Exception {
         String axioms = "ObjectPropertyAssertion(:hasFemalePartner :marriage_of_david_and_margaret :margaret) "
                 + "ObjectPropertyAssertion(:hasHusband :marriage_of_david_and_margaret :david) "
                 + "SubObjectPropertyOf(ObjectInverseOf(:hasWife) :isWifeOf) " +
@@ -19,7 +22,7 @@ public class RIATest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isConsistent());
     }
 
-    public void testRIARegularity0() throws Exception {
+    @Test void testRIARegularity0() throws Exception {
         // This is not really regular according to the OWL 2 specification due
         // to the first axiom;
         // however, we simply don't care about it!
@@ -28,49 +31,49 @@ public class RIATest extends AbstractReasonerTest {
         assertRegular(axioms, true);
     }
 
-    public void testRIARegularity1() throws Exception {
+    @Test void testRIARegularity1() throws Exception {
         String axioms = "SubObjectPropertyOf(:A :B) " + "SubObjectPropertyOf(:B :C) " + "SubObjectPropertyOf(:C :D) "
                 + "SubObjectPropertyOf(:D :A) ";
         assertRegular(axioms, true);
     }
 
-    public void testRIARegularity2() throws Exception {
+    @Test void testRIARegularity2() throws Exception {
         String axioms = "SubObjectPropertyOf(ObjectPropertyChain(:R :Q) :P) " + "InverseObjectProperties(:P :Q) ";
         assertRegular(axioms, false);
     }
 
-    public void testRIARegularity3() throws Exception {
+    @Test void testRIARegularity3() throws Exception {
         // The following is in disagreement with FaCT++
         String axioms = "SubObjectPropertyOf(ObjectPropertyChain(:R ObjectInverseOf(:Q)) :P) "
                 + "InverseObjectProperties(:P :Q) ";
         assertRegular(axioms, false);
     }
 
-    public void testRIARegularity4() throws Exception {
+    @Test void testRIARegularity4() throws Exception {
         String axioms = "SubObjectPropertyOf(ObjectPropertyChain(:R :Q :P) :P) "
                 + "SubObjectPropertyOf(ObjectPropertyChain(:P :S) :Q) " + "SubObjectPropertyOf(:Q :R) ";
         assertRegular(axioms, false);
     }
 
-    public void testRIARegularity5() throws Exception {
+    @Test void testRIARegularity5() throws Exception {
         String axioms = "SubObjectPropertyOf(ObjectPropertyChain(:R :Q :P) :P) "
                 + "SubObjectPropertyOf(ObjectPropertyChain(:P :S) :L) " + "SubObjectPropertyOf(:L :R) "
                 + "SubObjectPropertyOf(:R :L) ";
         assertRegular(axioms, true);
     }
 
-    public void testRIARegularity6() throws Exception {
+    @Test void testRIARegularity6() throws Exception {
         String axioms = "SubObjectPropertyOf(ObjectPropertyChain(:P ObjectInverseOf(:P) :P) :P) ";
         assertRegular(axioms, false);
     }
 
-    public void testRIARegularity7() throws Exception {
+    @Test void testRIARegularity7() throws Exception {
         String axioms = "InverseObjectProperties(:P :P-) " + "SubObjectPropertyOf(ObjectPropertyChain(:L :P-) :L) "
                 + "SubObjectPropertyOf(ObjectPropertyChain(:R :L) :P) ";
         assertRegular(axioms, false);
     }
 
-    public void testRIARegularity8() throws Exception {
+    @Test void testRIARegularity8() throws Exception {
         String axioms = "SubObjectPropertyOf(ObjectPropertyChain(:R4 :R1) :R1) "
                 + "SubObjectPropertyOf(ObjectPropertyChain(:R1 :R2) :R2) "
                 + "SubObjectPropertyOf(ObjectPropertyChain(:R2 :R3) :R3) "
@@ -80,7 +83,7 @@ public class RIATest extends AbstractReasonerTest {
         assertRegular(axioms, true);
     }
 
-    public void testRIARegularity9() throws Exception {
+    @Test void testRIARegularity9() throws Exception {
         String axioms = "SubObjectPropertyOf(ObjectPropertyChain(:R1 :R2 :R3) :R) "
                 + "EquivalentObjectProperties( :R2 :R )";
         assertRegular(axioms, false);

@@ -1,27 +1,22 @@
 package org.semanticweb.HermiT.tableau;
 
+import static org.junit.jupiter.api.Assertions.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.Configuration;
 import org.semanticweb.HermiT.model.AtomicConcept;
 import org.semanticweb.HermiT.model.AtomicRole;
 import org.semanticweb.HermiT.model.DescriptionGraph;
-@SuppressWarnings("javadoc")
-public class GraphTest extends AbstractReasonerInternalsTest {
-    protected Set<DescriptionGraph> m_descriptionGraphs;
+//Test for the HermiT internals
+@Tag("tableau")
+class GraphTest extends AbstractReasonerInternalsTest {
+    protected Set<DescriptionGraph> m_descriptionGraphs = new HashSet<>();
 
-    public GraphTest(String name) {
-        super(name);
-    }
-
-    @Override
-    protected void setUp() {
-        super.setUp();
-        m_descriptionGraphs = new HashSet<>();
-    }
-
-    public void testGraphMerging() throws Exception {
+    @Test void testGraphMerging() throws Exception {
         DescriptionGraph graph = G(new String[] { "A", // 0
                 "B", // 1
                 "C", // 2
@@ -72,7 +67,7 @@ public class GraphTest extends AbstractReasonerInternalsTest {
         assertTrue(extensionManager.containsTuple(new Object[] { graph, n1, n7, n6 }));
     }
 
-    // public void testContradictionOnGraph() throws Exception {
+    // @Test void testContradictionOnGraph() throws Exception {
     // DescriptionGraph graph=G(
     // new String[] {
     // "A", // 0
@@ -107,7 +102,7 @@ public class GraphTest extends AbstractReasonerInternalsTest {
     // assertFalse(tableau.isSatisfiable());
     // }
 
-    public void testGraph1() throws Exception {
+    @Test void testGraph1() throws Exception {
         m_descriptionGraphs.add(G(new String[] { "A", // 0
                 "B", // 1
                 "C", // 2
@@ -127,7 +122,7 @@ public class GraphTest extends AbstractReasonerInternalsTest {
         assertABoxSatisfiable(true);
     }
 
-    // public void testGraph2() throws Exception {
+    // @Test void testGraph2() throws Exception {
     // m_descriptionGraphs.add(G(
     // new String[] {
     // "LP", // 0

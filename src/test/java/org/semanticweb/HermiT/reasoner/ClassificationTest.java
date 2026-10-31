@@ -1,27 +1,28 @@
 package org.semanticweb.HermiT.reasoner;
-@SuppressWarnings("javadoc")
-public class ClassificationTest extends AbstractReasonerTest {
 
-    public ClassificationTest(String name) {
-        super(name);
-    }
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-    public void testWine() throws Exception {
+//Unit tests for HermiT as a blackbox -- the heavy subset.
+@Tag("AllHeavyTests")
+class ClassificationTest extends AbstractReasonerTest {
+
+    @Test void testWine() throws Exception {
         loadReasonerFromResource("res/wine.xml");
         assertHierarchies("res/wine.xml.txt");
     }
 
-    public void testGalenIansFullUndoctored() throws Exception {
+    @Test void testGalenIansFullUndoctored() throws Exception {
         loadReasonerFromResource("res/galen-ians-full-undoctored.xml");
         assertHierarchies("res/galen-ians-full-undoctored.xml.txt");
     }
 
-    public void testPizza() throws Exception {
+    @Test void testPizza() throws Exception {
         loadReasonerFromResource("res/pizza.xml");
         assertHierarchies("res/pizza.xml.txt");
     }
 
-    public void testPropreo() throws Exception {
+    @Test void testPropreo() throws Exception {
         loadReasonerFromResource("res/propreo.xml");
         assertHierarchies("res/propreo.xml.txt");
     }

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.*;
 import org.semanticweb.HermiT.Configuration;
 import org.semanticweb.HermiT.blocking.AnywhereBlocking;
 import org.semanticweb.HermiT.blocking.BlockingSignatureCache;
@@ -23,10 +24,6 @@ import org.semanticweb.HermiT.reasoner.AbstractReasonerTest;
 import org.semanticweb.HermiT.structural.OWLClausification;
 @SuppressWarnings("javadoc")
 public abstract class AbstractReasonerInternalsTest extends AbstractReasonerTest {
-
-    public AbstractReasonerInternalsTest(String name) {
-        super(name);
-    }
 
     protected DLOntology getDLOntology(Configuration c, Set<DescriptionGraph> dgs) {
         OWLClausification clausification = new OWLClausification(c);
@@ -92,12 +89,6 @@ public abstract class AbstractReasonerInternalsTest extends AbstractReasonerTest
         for (int i = 0; i < consumed.length; i++)
             if (!consumed[i])
                 fail("Tuple from the expected list has not been seen in the retrieval.");
-    }
-
-    protected static void assertEquals(Object[] tuple1, Object[] tuple2) {
-        assertEquals(tuple1.length, tuple2.length);
-        for (int index = 0; index < tuple1.length; index++)
-            assertEquals(tuple1[index], tuple2[index]);
     }
 
     protected static boolean tuplesEqual(Object[] tuple1, Object[] tuple2) {

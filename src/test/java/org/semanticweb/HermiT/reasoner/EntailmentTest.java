@@ -1,20 +1,21 @@
 package org.semanticweb.HermiT.reasoner;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.semanticweb.owlapi.util.OWLAPIStreamUtils.asSet;
 
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.EntailmentChecker;
 import org.semanticweb.owlapi.io.OWLOntologyDocumentSource;
 import org.semanticweb.owlapi.io.StringDocumentSource;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
-@SuppressWarnings("javadoc")
-public class EntailmentTest extends AbstractReasonerTest {
 
-    public EntailmentTest(String name) {
-        super(name);
-    }
+//Unit tests for HermiT as a blackbox -- the quick subset.
+@Tag("AllQuickTests")
+class EntailmentTest extends AbstractReasonerTest {
 
-    public void testIntegerEntailment() throws Exception {
+    @Test void testIntegerEntailment() throws Exception {
         String axioms = "Declaration(DataProperty(:dp))" + "Declaration(NamedIndividual(:a))"
                 + "DataPropertyAssertion(:dp :a \"010\"^^xsd:integer)";
         loadReasonerWithAxioms(axioms);
@@ -23,7 +24,7 @@ public class EntailmentTest extends AbstractReasonerTest {
         assertEntails(asSet(conlusions.logicalAxioms()), true);
     }
 
-    public void testHasKey() throws Exception {
+    @Test void testHasKey() throws Exception {
         String axioms = "Declaration(DataProperty(:dp))" + "ClassAssertion(owl:Thing :a)"
                 + "SubClassOf(owl:Thing ObjectIntersectionOf(DataAllValuesFrom(:dp xsd:string) DataAllValuesFrom(:dp xsd:integer)))";
         loadReasonerWithAxioms(axioms);
@@ -32,7 +33,7 @@ public class EntailmentTest extends AbstractReasonerTest {
         assertEntails(asSet(conlusions.logicalAxioms()), true);
     }
 
-    public void testBlankNodes1() throws Exception {
+    @Test void testBlankNodes1() throws Exception {
         String axioms = "Declaration(ObjectProperty(:p))" + "ClassAssertion(owl:Thing :a )"
                 + "ObjectPropertyAssertion(:p :a _:anon)";
         loadReasonerWithAxioms(axioms);
@@ -42,7 +43,7 @@ public class EntailmentTest extends AbstractReasonerTest {
         assertEntails(asSet(conlusions.logicalAxioms()), true);
     }
 
-    public void testInvalidBlankNodes() throws Exception {
+    @Test void testInvalidBlankNodes() throws Exception {
         String axioms = "ClassAssertion(ObjectSomeValuesFrom(:p ObjectSomeValuesFrom(:s owl:Thing)) :a)"
                 + "SubObjectPropertyOf( :s :r- )" + "InverseObjectProperties( :r- :r ) ";
         loadReasonerWithAxioms(axioms);
@@ -50,15 +51,12 @@ public class EntailmentTest extends AbstractReasonerTest {
         axioms = "ObjectPropertyAssertion(:p :a _:anon1)" + "ObjectPropertyAssertion(:s _:anon1 _:anon2)"
                 + "ObjectPropertyAssertion(:r _:anon2 _:anon1)";
         OWLOntology conlusions = getOntologyWithAxioms(axioms);
-        try {
-            new EntailmentChecker(m_reasoner, m_dataFactory).entails(asSet(conlusions.logicalAxioms()));
-            fail();
-        } catch (@SuppressWarnings("unused") Exception e) {
-            // blank nodes in the conclusion ontology should not contain cycles
-        }
+        assertThrows(Exception.class, () ->
+        // blank nodes in the conclusion ontology should not contain cycles
+            new EntailmentChecker(m_reasoner, m_dataFactory).entails(asSet(conlusions.logicalAxioms())));
     }
 
-    public void testValidBlankNodesWithNominals() throws Exception {
+    @Test void testValidBlankNodesWithNominals() throws Exception {
         String axioms = "ClassAssertion(ObjectSomeValuesFrom(:p ObjectSomeValuesFrom(:s ObjectOneOf(:b))) :a)"
                 + "SubObjectPropertyOf( :s :r )";
         loadReasonerWithAxioms(axioms);
@@ -68,7 +66,7 @@ public class EntailmentTest extends AbstractReasonerTest {
         assertEntails(asSet(conlusions.logicalAxioms()), true);
     }
 
-    public void testValidBlankNodesInPremise() throws Exception {
+    @Test void testValidBlankNodesInPremise() throws Exception {
         String axioms = "ObjectPropertyAssertion(:r :a _:anon1)" + "ObjectPropertyAssertion(:s _:anon1 _:anon2)";
         loadReasonerWithAxioms(axioms);
         m_ontologyManager.removeOntology(m_ontology);
@@ -77,7 +75,7 @@ public class EntailmentTest extends AbstractReasonerTest {
         assertEntails(asSet(conlusions.logicalAxioms()), true);
     }
 
-    public void testValidBlankNodes() throws Exception {
+    @Test void testValidBlankNodes() throws Exception {
         String axioms = "ObjectPropertyAssertion(:r :a :b)" + "ObjectPropertyAssertion(:s :b :c)";
         loadReasonerWithAxioms(axioms);
         m_ontologyManager.removeOntology(m_ontology);
@@ -86,7 +84,7 @@ public class EntailmentTest extends AbstractReasonerTest {
         assertEntails(asSet(conlusions.logicalAxioms()), true);
     }
 
-    public void testBlankWithDTs() throws Exception {
+    @Test void testBlankWithDTs() throws Exception {
         String axioms = "ObjectPropertyAssertion(:r :a :b)" + "ObjectPropertyAssertion(:s :b :c)";
         loadReasonerWithAxioms(axioms);
         m_ontologyManager.removeOntology(m_ontology);
@@ -95,7 +93,7 @@ public class EntailmentTest extends AbstractReasonerTest {
         assertEntails(asSet(conlusions.logicalAxioms()), false);
     }
 
-    public void testBlankWithDTs2() throws Exception {
+    @Test void testBlankWithDTs2() throws Exception {
         String axioms = "DataPropertyAssertion(:dp :a \"test\")" + "ObjectPropertyAssertion(:s :b :c)";
         loadReasonerWithAxioms(axioms);
         m_ontologyManager.removeOntology(m_ontology);
@@ -104,7 +102,7 @@ public class EntailmentTest extends AbstractReasonerTest {
         assertEntails(asSet(conlusions.logicalAxioms()), true);
     }
 
-    public void testBlankWithDTs3() throws Exception {
+    @Test void testBlankWithDTs3() throws Exception {
         String axioms = "DataPropertyAssertion(:dp :a \"test\")" + "ObjectPropertyAssertion(:s :b :c)";
         loadReasonerWithAxioms(axioms);
         m_ontologyManager.removeOntology(m_ontology);

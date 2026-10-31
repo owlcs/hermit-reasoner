@@ -1,15 +1,15 @@
 package org.semanticweb.HermiT.reasoner;
 
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.Configuration;
 import org.semanticweb.HermiT.Configuration.BlockingSignatureCacheType;
 import org.semanticweb.HermiT.Configuration.BlockingStrategyType;
 import org.semanticweb.HermiT.Configuration.DirectBlockingType;
-@SuppressWarnings("javadoc")
-public class ReasonerCoreBlockingTest extends ReasonerTest {
 
-    public ReasonerCoreBlockingTest(String name) {
-        super(name);
-    }
+//Unit tests for HermiT as a blackbox -- the quick subset.
+@Tag("AllQuickTests")
+class ReasonerCoreBlockingTest extends ReasonerTest {
 
     @Override
     protected Configuration getConfiguration() {
@@ -21,7 +21,7 @@ public class ReasonerCoreBlockingTest extends ReasonerTest {
         return c;
     }
 
-    public void testExpansion() throws Exception {
+    @Test void testExpansion() throws Exception {
         String axioms = "SubClassOf(:B ObjectSomeValuesFrom(:r :D)) "
                 + "SubClassOf(owl:Thing ObjectMaxCardinality(1 :r :C))" + "SubClassOf(:D :C)"
                 + "SubClassOf(:A ObjectSomeValuesFrom(ObjectInverseOf(:r) :B))" + "ClassAssertion(:C :a)"
@@ -31,7 +31,7 @@ public class ReasonerCoreBlockingTest extends ReasonerTest {
     }
 
     @Override
-    public void testWidmann2() throws Exception {
+    @Test void testWidmann2() throws Exception {
         // <r>q;
         // <r->[r-][r][r][r]p
         String axioms = "SubClassOf(owl:Thing ObjectSomeValuesFrom(:r :q)) " + "InverseObjectProperties(:r :r-)"
@@ -53,12 +53,12 @@ public class ReasonerCoreBlockingTest extends ReasonerTest {
     }
 
     @Override
-    public void testDependencyDisjunctionMergingBug() {
+    @Test void testDependencyDisjunctionMergingBug() {
         // not yet compatible with core blocking
     }
 
     @Override
-    public void testIanT6() throws Exception {
+    @Test void testIanT6() throws Exception {
         StringBuilder buffer = new StringBuilder();
         buffer.append("InverseObjectProperties(:r :r-)");
         buffer.append("InverseObjectProperties(:f :f-)");
@@ -90,7 +90,7 @@ public class ReasonerCoreBlockingTest extends ReasonerTest {
     }
 
     @Override
-    public void testIanT9() throws Exception {
+    @Test void testIanT9() throws Exception {
         StringBuilder buffer = new StringBuilder();
         buffer.append("InverseObjectProperties(:successor :successor-)");
         buffer.append("TransitiveObjectProperty(:descendant)");

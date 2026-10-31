@@ -17,41 +17,66 @@
  */
 package org.semanticweb.HermiT.owl_wg_tests;
 
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.semanticweb.owlapi.util.OWLAPIStreamUtils.asSet;
 
 import java.io.File;
+import java.time.Duration;
 
 import org.semanticweb.HermiT.EntailmentChecker;
+import org.semanticweb.HermiT.owl_wg_tests.WGTestDescriptor.TestType;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 
-import java.util.Collection;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.junit.runner.RunWith;
-import org.junit.Test;
-import org.junit.Before;
-import org.junit.After;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-@SuppressWarnings("javadoc")
-@RunWith(Parameterized.class)
-public class EntailmentTest extends AbstractTest {
-    protected final boolean m_positive;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+class EntailmentTest extends AbstractTest {
+
+    static List<String> slowCases = Arrays.asList(
+            "WebOnt-description-logic-202",
+            "WebOnt-description-logic-203",
+            "WebOnt-description-logic-204", 
+            "WebOnt-description-logic-206",
+            "WebOnt-description-logic-208",
+            "WebOnt-description-logic-209",
+            "WebOnt-miscellaneous-011",
+            "WebOnt-I5.8-004",
+            "WebOnt-I5.8-005",
+            "WebOnt-description-logic-661",
+            "WebOnt-description-logic-662",
+            "WebOnt-description-logic-663",
+            "WebOnt-description-logic-664",
+            "WebOnt-description-logic-903",
+            "WebOnt-description-logic-904");
+
+    protected boolean m_positive;
     protected OWLOntology m_conclusionOntology;
 
-    public EntailmentTest(WGTestDescriptor wgTestDescriptor, boolean positive, File dumpTestDataDirectory,
-            boolean useDisjunctionLearning) {
-        super(wgTestDescriptor.identifier + (positive ? "-entailment" : "-nonentailment"), wgTestDescriptor,
-                dumpTestDataDirectory, useDisjunctionLearning);
+    @ParameterizedTest
+    @MethodSource("params")
+    void entailmentTest(WGTestDescriptor wgTestDescriptor, boolean positive, File dumpTestDataDirectory,
+            boolean useDisjunctionLearning) throws Exception {
+        assumeFalse(slowCases.contains(wgTestDescriptor.identifier));
         m_positive = positive;
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+        prepareTest(wgTestDescriptor.identifier + (positive ? "-entailment" : "-nonentailment"), wgTestDescriptor,
+                dumpTestDataDirectory, useDisjunctionLearning);
+        m_ontologyManager = OWLManager.createOWLOntologyManager();
+        registerImportedReosurces();
+        m_premiseOntology = m_wgTestDescriptor.getPremiseOntology(m_ontologyManager);
         m_conclusionOntology = m_wgTestDescriptor.getConclusionOntology(m_ontologyManager, m_positive);
+        assertTimeoutPreemptively(Duration.ofSeconds(1), ()-> runTest(), wgTestDescriptor.identifier);
     }
 
-    @Override
+    @AfterEach
     protected void tearDown() {
         super.tearDown();
         m_conclusionOntology = null;
@@ -62,9 +87,9 @@ public class EntailmentTest extends AbstractTest {
         EntailmentChecker checker = new EntailmentChecker(m_reasoner, m_ontologyManager.getOWLDataFactory());
         boolean isEntailed = checker.entails(asSet(m_conclusionOntology.logicalAxioms()));
         if (m_positive)
-            assertTrue("Axioms should be entailed.", isEntailed);
+            assertTrue( isEntailed,"Axioms should be entailed.");
         else
-            assertTrue("At least one axiom should not be entailed by the premise ontology.", !isEntailed);
+            assertTrue(!isEntailed, "At least one axiom should not be entailed by the premise ontology.");
     }
 
     @Override
@@ -74,25 +99,25 @@ public class EntailmentTest extends AbstractTest {
             saveOntology(m_conclusionOntology, new File(m_dumpTestDataDirectory, m_positive ? "conclusion.owl" : "nonconclusion.owl"));
     }
 
-    // junit 4 stuff...
-    @Test
-    public void test() throws Throwable {
-        runTest();
+    static List<Arguments> params() throws Exception {
+        
+        List<Arguments> list=new ArrayList<>();
+        list.addAll(AllApprovedWGTests.arguments(TestType.POSITIVE_ENTAILMENT));
+        list.addAll(AllApprovedWGTests.arguments(TestType.NEGATIVE_ENTAILMENT));
+        list.addAll(AllExtracreditWGTests.arguments(TestType.POSITIVE_ENTAILMENT));
+        list.addAll(AllExtracreditWGTests.arguments(TestType.NEGATIVE_ENTAILMENT));
+        list.addAll(AllNonRejectedNonExtracreditWGTests.arguments(TestType.POSITIVE_ENTAILMENT));
+        list.addAll(AllNonRejectedNonExtracreditWGTests.arguments(TestType.NEGATIVE_ENTAILMENT));
+        list.addAll(AllProposedWGTests.arguments(TestType.POSITIVE_ENTAILMENT));
+        list.addAll(AllProposedWGTests.arguments(TestType.NEGATIVE_ENTAILMENT));
+        list.addAll(AllWGTests.arguments(TestType.POSITIVE_ENTAILMENT));
+        list.addAll(AllWGTests.arguments(TestType.NEGATIVE_ENTAILMENT));
+        list.addAll(AllWGTestsWithoutStatus.arguments(TestType.POSITIVE_ENTAILMENT));
+        list.addAll(AllWGTestsWithoutStatus.arguments(TestType.NEGATIVE_ENTAILMENT));
+        list.addAll(AllWGTestsWithStatus.arguments(TestType.POSITIVE_ENTAILMENT));
+        list.addAll(AllWGTestsWithStatus.arguments(TestType.NEGATIVE_ENTAILMENT));
+        list.addAll(FailingWGTestDebug.arguments(TestType.POSITIVE_ENTAILMENT));
+        list.addAll(FailingWGTestDebug.arguments(TestType.NEGATIVE_ENTAILMENT));
+        return list;
     }
-
-    @Before
-    public void before() throws Exception {
-        setUp();
-    }
-
-    @After
-    public void after() {
-        tearDown();
-    }
-
-    @Parameters
-    public static Collection<Object[]> params() throws Exception {
-        return TstDescriptorForMaven.getEntailmentTestParams();
-    }
-
 }

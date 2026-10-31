@@ -3,7 +3,10 @@ package org.semanticweb.HermiT.graph;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.AbstractOntologyTest;
 import org.semanticweb.HermiT.model.Atom;
 import org.semanticweb.HermiT.model.AtomicConcept;
@@ -13,22 +16,14 @@ import org.semanticweb.HermiT.model.Individual;
 import org.semanticweb.HermiT.reasoner.AbstractReasonerTest;
 import org.semanticweb.HermiT.tableau.ReasoningTaskDescription;
 import org.semanticweb.HermiT.tableau.Tableau;
-@SuppressWarnings("javadoc")
-public class GraphTest extends AbstractReasonerTest {
 
-    protected Set<DescriptionGraph> m_descriptionGraphs;
+//Unit tests for the graph library
+@Tag("Graph")
+class GraphTest extends AbstractReasonerTest {
 
-    public GraphTest(String name) {
-        super(name);
-    }
+    protected Set<DescriptionGraph> m_descriptionGraphs = new HashSet<>();
 
-    @Override
-    protected void setUp() {
-        super.setUp();
-        m_descriptionGraphs = new HashSet<>();
-    }
-
-    // public void testTransClosure() throws Exception {
+    // @Test void testTransClosure() throws Exception {
     // Graph<Integer> g = new Graph<Integer>();
     // add(g, 0, 1);
     // add(g, 1, 2);
@@ -46,7 +41,7 @@ public class GraphTest extends AbstractReasonerTest {
     // assertContainsAll(g.getSuccessors(7), 6);
     // }
     //
-    // public void testGraphMerging() throws Exception {
+    // @Test void testGraphMerging() throws Exception {
     // DescriptionGraph graph = G(new String[] { GraphTest.NS+"A", // 0
     // GraphTest.NS+"B", // 1
     // GraphTest.NS+"C", // 2
@@ -105,7 +100,7 @@ public class GraphTest extends AbstractReasonerTest {
     // n6 }));
     // }
     //
-    public void testContradictionOnGraph() throws Exception {
+    @Test void testContradictionOnGraph() throws Exception {
         DescriptionGraph graph = G(new String[] { AbstractOntologyTest.NS + "A", // 0
                 AbstractOntologyTest.NS + "B", // 1
         }, new DescriptionGraph.Edge[] { E(AbstractOntologyTest.NS + "R", 0, 1), },
@@ -127,7 +122,7 @@ public class GraphTest extends AbstractReasonerTest {
                 ReasoningTaskDescription.isABoxSatisfiable()));
     }
 
-    public void testGraph1() throws Exception {
+    @Test void testGraph1() throws Exception {
         m_descriptionGraphs.add(G(new String[] { AbstractOntologyTest.NS + "A", // 0
                 AbstractOntologyTest.NS + "B", // 1
                 AbstractOntologyTest.NS + "C", // 2
@@ -144,7 +139,7 @@ public class GraphTest extends AbstractReasonerTest {
                 ReasoningTaskDescription.isABoxSatisfiable()));
     }
 
-    public void testGraph2() throws Exception {
+    @Test void testGraph2() throws Exception {
         m_descriptionGraphs.add(G(new String[] { AbstractOntologyTest.NS + "LP", // 0
                 AbstractOntologyTest.NS + "RP", // 1
                 AbstractOntologyTest.NS + "P", // 2

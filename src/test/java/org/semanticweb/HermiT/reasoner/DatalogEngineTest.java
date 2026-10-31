@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.datalog.ConjunctiveQuery;
 import org.semanticweb.HermiT.datalog.DatalogEngine;
 import org.semanticweb.HermiT.datalog.QueryResultCollector;
@@ -16,14 +18,11 @@ import org.semanticweb.HermiT.model.Individual;
 import org.semanticweb.HermiT.model.Term;
 import org.semanticweb.HermiT.model.Variable;
 
-@SuppressWarnings("javadoc")
-public class DatalogEngineTest extends AbstractReasonerTest {
+//Unit tests for HermiT as a blackbox -- the quick subset.
+@Tag("AllQuickTests")
+class DatalogEngineTest extends AbstractReasonerTest {
 
-    public DatalogEngineTest(String name) {
-        super(name);
-    }
-
-    public void testBasic() throws Exception {
+    @Test void testBasic() throws Exception {
         loadOntologyWithAxioms(
                 "SubClassOf( ObjectSomeValuesFrom( :R :A ) :A )\n" + "SubClassOf( ObjectSomeValuesFrom( :R :B ) :B )\n"
                         + "SubClassOf( ObjectIntersectionOf( :A :B ) :C )\n" +
@@ -47,7 +46,7 @@ public class DatalogEngineTest extends AbstractReasonerTest {
         queryChecker.add(I("c")).add(I("d")).add(I("n")).assertEquals();
     }
 
-    public void testEquality() throws Exception {
+    @Test void testEquality() throws Exception {
         loadOntologyWithAxioms("FunctionalObjectProperty( :R )\n" +
 
         "ObjectPropertyAssertion( :R :b :a )\n" + "ObjectPropertyAssertion( :R :b :c )\n"
@@ -65,7 +64,7 @@ public class DatalogEngineTest extends AbstractReasonerTest {
                 .add(I("f"), datalogEngine.getRepresentative(I("a"))).assertEquals();
     }
 
-    public void testQueryWithIndividualsAndEquality() throws Exception {
+    @Test void testQueryWithIndividualsAndEquality() throws Exception {
         loadOntologyWithAxioms("ObjectPropertyAssertion( :R :c :b )\n" + "ObjectPropertyAssertion( :S :c :a )\n"
                 + "SameIndividual( :a :b )\n" +
 
@@ -81,7 +80,7 @@ public class DatalogEngineTest extends AbstractReasonerTest {
         queryChecker.add(I("c")).assertEquals();
     }
 
-    public void testQueryWithIndividuals() throws Exception {
+    @Test void testQueryWithIndividuals() throws Exception {
         loadOntologyWithAxioms("DLSafeRule(Body(ClassAtom(:D0 Variable(:X))) Head(ClassAtom(:A Variable(:X))))\n"
                 + "DLSafeRule(Body(ClassAtom(:D0 Variable(:X))) Head(ClassAtom(:B Variable(:X))))\n"
                 + "DLSafeRule(Body(ClassAtom(:A Variable(:X))ClassAtom(:RD0 Variable(:Z))) Head(ClassAtom(:D0 Variable(:Z))))\n"

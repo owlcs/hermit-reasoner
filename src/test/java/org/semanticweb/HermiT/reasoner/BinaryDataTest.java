@@ -1,74 +1,76 @@
 package org.semanticweb.HermiT.reasoner;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.datatypes.binarydata.BinaryData;
 import org.semanticweb.HermiT.datatypes.binarydata.BinaryDataLengthInterval;
 import org.semanticweb.HermiT.datatypes.binarydata.BinaryDataType;
-@SuppressWarnings("javadoc")
-public class BinaryDataTest extends AbstractReasonerTest {
 
-    public BinaryDataTest(String name) {
-        super(name);
-    }
+//Unit tests for HermiT as a blackbox -- the quick subset.
+@Tag("AllQuickTests")
+class BinaryDataTest extends AbstractReasonerTest {
 
-    public void testParsing_1() throws Exception {
+    @Test void testParsing_1() throws Exception {
         assertDRSatisfiable(true, DR("xsd:hexBinary"), OO(HEXB("0AFF")));
     }
 
-    public void testParsing_2() throws Exception {
+    @Test void testParsing_2() throws Exception {
         assertDRSatisfiable(false, DR("xsd:base64Binary"), OO(HEXB("0AFF")));
     }
 
-    public void testLength_1() throws Exception {
+    @Test void testLength_1() throws Exception {
         assertDRSatisfiable(true, DR("xsd:hexBinary", "xsd:length", INT("2")), OO(HEXB("0AFF")));
     }
 
-    public void testLength_2() throws Exception {
+    @Test void testLength_2() throws Exception {
         assertDRSatisfiable(false, DR("xsd:hexBinary", "xsd:length", INT("3")), OO(HEXB("0AFF")));
     }
 
-    public void testLength_3() throws Exception {
+    @Test void testLength_3() throws Exception {
         assertDRSatisfiable(true, DR("xsd:hexBinary", "xsd:minLength", INT("2"), "xsd:maxLength", INT("6")),
                 NOT(DR("xsd:hexBinary", "xsd:minLength", INT("3"), "xsd:maxLength", INT("5"))), OO(HEXB("0AFF")));
     }
 
-    public void testLength_4() throws Exception {
+    @Test void testLength_4() throws Exception {
         assertDRSatisfiable(true, DR("xsd:hexBinary", "xsd:minLength", INT("2"), "xsd:maxLength", INT("6")),
                 NOT(DR("xsd:hexBinary", "xsd:minLength", INT("3"), "xsd:maxLength", INT("5"))),
                 OO(HEXB("0AFF0AFF0AFF")));
     }
 
-    public void testLength_5() throws Exception {
+    @Test void testLength_5() throws Exception {
         assertDRSatisfiable(false, DR("xsd:hexBinary", "xsd:minLength", INT("2"), "xsd:maxLength", INT("6")),
                 NOT(DR("xsd:hexBinary", "xsd:minLength", INT("3"), "xsd:maxLength", INT("5"))), OO(HEXB("0AFF0AFF0A")));
     }
 
-    public void testSize_1() throws Exception {
+    @Test void testSize_1() throws Exception {
         assertDRSatisfiable(true, DR("xsd:hexBinary", "xsd:length", INT("0")));
     }
 
-    public void testSize_2() throws Exception {
+    @Test void testSize_2() throws Exception {
         assertDRSatisfiable(false, 2, DR("xsd:hexBinary", "xsd:length", INT("0")));
     }
 
-    public void testSize_3() throws Exception {
+    @Test void testSize_3() throws Exception {
         assertDRSatisfiable(false, DR("xsd:hexBinary", "xsd:length", INT("0")), NOT(OO(HEXB(""))));
     }
 
-    public void testIntersection_1() throws Exception {
+    @Test void testIntersection_1() throws Exception {
         assertDRSatisfiable(true, DR("xsd:hexBinary", "xsd:minLength", INT("0")),
                 NOT(DR("xsd:hexBinary", "xsd:minLength", INT("1"))));
     }
 
-    public void testIntersection_2() throws Exception {
+    @Test void testIntersection_2() throws Exception {
         assertDRSatisfiable(false, 2, DR("xsd:hexBinary", "xsd:minLength", INT("0")),
                 NOT(DR("xsd:hexBinary", "xsd:minLength", INT("1"))));
     }
 
-    public void testExplicitSize() {
+    @Test void testExplicitSize() {
         BinaryDataLengthInterval imax2 = interval(BinaryDataType.HEX_BINARY, 0, 2);
         assertEquals(10000000, imax2.subtractSizeFrom(10000000 + 1 + 256 + 256 * 256));
 
@@ -76,7 +78,7 @@ public class BinaryDataTest extends AbstractReasonerTest {
         assertEquals(10000000, imin1max2.subtractSizeFrom(10000000 + 256 + 256 * 256));
     }
 
-    public void testEnumerate1() {
+    @Test void testEnumerate1() {
         BinaryDataLengthInterval imax1 = interval(BinaryDataType.HEX_BINARY, 0, 1);
         List<Object> values = new ArrayList<>();
         imax1.enumerateValues(values);
@@ -86,7 +88,7 @@ public class BinaryDataTest extends AbstractReasonerTest {
         assertContainsAll(values, control.toArray());
     }
 
-    public void testEnumerate2() {
+    @Test void testEnumerate2() {
         BinaryDataLengthInterval iexact1 = interval(BinaryDataType.HEX_BINARY, 1, 1);
         List<Object> values = new ArrayList<>();
         iexact1.enumerateValues(values);
@@ -111,7 +113,7 @@ public class BinaryDataTest extends AbstractReasonerTest {
         return new BinaryDataLengthInterval(type, minLength, maxLength);
     }
 
-    public void testBase64Parsing() {
+    @Test void testBase64Parsing() {
         BinaryData data1 = BinaryData.parseBase64Binary("ZXdyZA==");
         assertBinaryData(data1, "ewrd");
         BinaryData data2 = BinaryData.parseBase64Binary(" Z  X d y Z A ==  ");

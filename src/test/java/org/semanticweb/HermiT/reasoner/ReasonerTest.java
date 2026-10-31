@@ -1,5 +1,5 @@
 package org.semanticweb.HermiT.reasoner;
-
+import static org.junit.jupiter.api.Assertions.*;
 import static org.semanticweb.owlapi.util.OWLAPIStreamUtils.*;
 
 import java.io.CharArrayWriter;
@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.semanticweb.HermiT.AbstractOntologyTest;
 import org.semanticweb.HermiT.Configuration;
 import org.semanticweb.HermiT.ReasonerFactory;
@@ -44,14 +46,11 @@ import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.vocab.OWLFacet;
 
-@SuppressWarnings("javadoc")
-public class ReasonerTest extends AbstractReasonerTest {
+//Unit tests for HermiT as a blackbox -- the quick subset.
+@Tag("AllQuickTests")
+class ReasonerTest extends AbstractReasonerTest {
 
-    public ReasonerTest(String name) {
-        super(name);
-    }
-
-    public void testOnyDeclaredEntitiesInHierarchy() throws Exception {
+    @Test void testOnyDeclaredEntitiesInHierarchy() throws Exception {
         IRI testOntologyIRI = IRI.create("http://test.org");
         OWLOntologyManager m = OWLManager.createOWLOntologyManager();
         OWLOntology o = m.createOntology(testOntologyIRI);
@@ -78,7 +77,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertTrue(result.entities().count() == 2L);
     }
 
-    public void testIsEntailed() throws Exception {
+    @Test void testIsEntailed() throws Exception {
         loadOntologyWithAxioms("Declaration( Class( :Infection ) )" + "Declaration( Class( :DomainCategory ) )"
                 + "Declaration( ObjectProperty( :attribute ) )" + "\n"
                 + "SubClassOf( :Infection ObjectSomeValuesFrom( :attribute :DomainCategory ) )");
@@ -95,7 +94,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isSatisfiable(and));
     }
 
-    public void testUniversalRolePartitionedABox() throws Exception {
+    @Test void testUniversalRolePartitionedABox() throws Exception {
         loadOntologyWithAxioms("Declaration( Class( :A ) )" + "Declaration( Class( :B ) )"
                 + "Declaration( NamedIndividual( :a ) )" + "\n" + "Declaration( NamedIndividual( :nb ) )" + "\n"
                 + "SubClassOf( :A ObjectAllValuesFrom( owl:topObjectProperty :B ) )" + "\n"
@@ -104,7 +103,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isConsistent());
     }
 
-    public void testIncrementalWithSameAs() throws Exception {
+    @Test void testIncrementalWithSameAs() throws Exception {
         String axioms = "Declaration( Class( :A ) )" + "\n" + "Declaration( NamedIndividual( :a ) )" + "\n"
                 + "ClassAssertion(:A :a)";
         loadOntologyWithAxioms(axioms);
@@ -116,7 +115,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(result.contains(NS_NI("a")));
     }
 
-    public void testClassificationWithValidatedBlockingError() throws Exception {
+    @Test void testClassificationWithValidatedBlockingError() throws Exception {
         loadOntologyFromResource("res/classification-blocking-error.owl");
         createReasoner();
         OWLClass c1 = C("http://www.co-ode.org/ontologies/galen#BloodVessel");
@@ -126,7 +125,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertTrue(m_reasoner.isEntailed(ax));
     }
 
-    public void testIncrementalWithNegatedHasValue() throws Exception {
+    @Test void testIncrementalWithNegatedHasValue() throws Exception {
         String axioms = "Declaration( ObjectProperty( :r ) )" + "\n" + "Declaration( Class( :A ) )" + "\n"
                 + "Declaration( Class( :B ) )" + "\n" + "SubClassOf( :A ObjectSomeValuesFrom(:r :B) )" + "\n"
                 + "Declaration( NamedIndividual( :a ) )" + "\n" + "Declaration( NamedIndividual( :b ) )" + "\n"
@@ -168,7 +167,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isConsistent());
     }
 
-    public void testIncrementalWithHasValue() throws Exception {
+    @Test void testIncrementalWithHasValue() throws Exception {
         String axioms = "Declaration( ObjectProperty( :r ) )" + "\n" + "Declaration( Class( :A ) )" + "\n"
                 + "Declaration( Class( :B ) )" + "\n" + "SubClassOf( :A ObjectSomeValuesFrom(:r :B) )" + "\n"
                 + "Declaration( NamedIndividual( :a ) )" + "\n" + "Declaration( NamedIndividual( :b ) )" + "\n"
@@ -197,7 +196,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertTrue(m_reasoner.hasObjectPropertyRelationship(NS_NI("a"), NS_OP("r"), NS_NI("c")));
     }
 
-    public void testIncrementalWithNegatedClass() throws Exception {
+    @Test void testIncrementalWithNegatedClass() throws Exception {
         String axioms = "Declaration( ObjectProperty( :r ) )" + "\n" + "Declaration( Class( :A ) )" + "\n"
                 + "Declaration( Class( :B ) )" + "\n" + "SubClassOf( :A ObjectSomeValuesFrom(:r :B) )" + "\n"
                 + "Declaration( NamedIndividual( :a ) )" + "\n" + "ClassAssertion(:A :a)";
@@ -226,7 +225,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isConsistent());
     }
 
-    public void testIncrementalWithClass() throws Exception {
+    @Test void testIncrementalWithClass() throws Exception {
         String axioms = "Declaration( ObjectProperty( :r ) )" + "\n" + "Declaration( Class( :A ) )" + "\n"
                 + "Declaration( Class( :B ) )" + "\n" + "SubClassOf( :A ObjectSomeValuesFrom(:r :B) )" + "\n"
                 + "Declaration( NamedIndividual( :a ) )" + "\n" + "ClassAssertion(:A :a)";
@@ -255,7 +254,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertTrue(m_reasoner.hasType(NS_NI("a"), NS_C("C"), false));
     }
 
-    public void testIncrementalWithNegatedHasSelf() throws Exception {
+    @Test void testIncrementalWithNegatedHasSelf() throws Exception {
         String axioms = "Declaration( ObjectProperty( :r ) )" + "\n" + "Declaration( Class( :A ) )" + "\n"
                 + "Declaration( Class( :B ) )" + "\n" + "SubClassOf( :A ObjectSomeValuesFrom(:r :B) )" + "\n"
                 + "Declaration( NamedIndividual( :a ) )" + "\n" + "ClassAssertion(:A :a)";
@@ -275,7 +274,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isConsistent());
     }
 
-    public void testIncrementalWithHasSelf() throws Exception {
+    @Test void testIncrementalWithHasSelf() throws Exception {
         String axioms = "Declaration( ObjectProperty( :r ) )" + "\n" + "Declaration( Class( :A ) )" + "\n"
                 + "Declaration( Class( :B ) )" + "\n" + "SubClassOf( :A ObjectSomeValuesFrom(:r :B) )" + "\n"
                 + "Declaration( NamedIndividual( :a ) )" + "\n" + "ClassAssertion(:A :a)";
@@ -337,7 +336,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         return m_ontologyManager.loadOntologyFromOntologyDocument(input);
     }
 
-    public void testIncrementalWithFreshNames() throws Exception {
+    @Test void testIncrementalWithFreshNames() throws Exception {
         String axioms = "Declaration( Class( :A ) )\n" + "Declaration( Class( :B ) )\n"
                 + "Declaration( Class( :C ) )\n" + "SubClassOf( :A :B )\n"
                 + "Declaration( NamedIndividual( :a ) )\n" + "Declaration( NamedIndividual( :c ) )\n"
@@ -357,7 +356,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.hasType(NS_NI("c"), NS_C("B"), false));
     }
 
-    public void testInstanteManagerError() throws Exception {
+    @Test void testInstanteManagerError() throws Exception {
         loadOntologyFromResource("res/pets-error.owl");
         createReasoner();
         m_reasoner.precomputeInferences(InferenceType.CLASS_ASSERTIONS, InferenceType.OBJECT_PROPERTY_ASSERTIONS);
@@ -365,7 +364,7 @@ public class ReasonerTest extends AbstractReasonerTest {
                 C("http://owl.cs.manchester.ac.uk/2011/07/sssw/pets#PetOwner1"), false));
     }
 
-    public void testTopOPEquivalence() throws Exception {
+    @Test void testTopOPEquivalence() throws Exception {
         loadOntologyWithAxioms("Declaration( NamedIndividual( :a ) )\n" + "Declaration( ObjectProperty( :op ) )\n"
                 + "SubClassOf( owl:Thing ObjectOneOf( :a ) )\n"
                 + "SubClassOf( ObjectOneOf(:a) ObjectSomeValuesFrom( :op owl:Thing ) )\n");
@@ -375,7 +374,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertTrue(m_reasoner.getEquivalentObjectProperties(op).contains(m_dataFactory.getOWLTopObjectProperty()));
     }
 
-    public void testReflexiveAndSameAs() throws Exception {
+    @Test void testReflexiveAndSameAs() throws Exception {
         loadOntologyWithAxioms("Declaration( NamedIndividual( :a ) )\n" + "Declaration( NamedIndividual( :b ) )\n"
                 + "Declaration( ObjectProperty( :r ) )\n" + "ReflexiveObjectProperty( :r )\n"
                 + "ObjectPropertyAssertion( :r :a :b )\n" + "SameIndividual( :a :b )\n");
@@ -395,7 +394,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertTrue(instances.get(b).contains(b));
     }
 
-    // public void testBackTracking() throws Exception {
+    // @Test void testBackTracking() throws Exception {
     // loadOntologyWithAxioms(
     // "Declaration( Class( :A ) )"+LB+
     // "Declaration( Class( :B ) )"+LB+
@@ -443,7 +442,7 @@ public class ReasonerTest extends AbstractReasonerTest {
     // m_reasoner.isConsistent();
     // System.out.println("done");
     // }
-    public void testFreshEntityEntailment() throws Exception {
+    @Test void testFreshEntityEntailment() throws Exception {
         loadOntologyWithAxioms("Declaration( Class( :A ) )" + "Declaration( Class( :B ) )"
                 + "Declaration( ObjectProperty( :r ) )" + "Declaration( ObjectProperty( :s ) )" + "SubClassOf( :A :B )"
                 + "SubClassOf( owl:Thing :B )" + "SubObjectPropertyOf( :r :s )");
@@ -466,7 +465,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertTrue(opinstances.isEmpty());
     }
 
-    public void testUniversalRoleSubsumption() throws Exception {
+    @Test void testUniversalRoleSubsumption() throws Exception {
         loadOntologyWithAxioms("Declaration( Class( :C ) )" + "Declaration( Class( :D ) )"
                 + "Declaration( Class( :E ) )" + "Declaration( Class( :Ax2 ) )" + "Declaration( Class( :Ax3 ) )"
                 + "SubClassOf( :C :D )"
@@ -476,7 +475,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSubsumedBy(NS_C(":Ax2"), NS_C(":Ax3"), false);
     }
 
-    public void testPrecomputeDisjointClasses() throws Exception {
+    @Test void testPrecomputeDisjointClasses() throws Exception {
         loadOntologyWithAxioms("Declaration( Class( :A ) )" + "Declaration( Class( :B ) )"
                 + "Declaration( Class( :C ) )" + "Declaration( Class( :D ) )" + "Declaration( Class( :E ) )"
                 + "Declaration( Class( :F ) )" + "SubClassOf( :A :B )" + "SubClassOf( :A :C )" + "SubClassOf( :C :E )"
@@ -534,7 +533,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertTrue(disjoints.entities().count() == 5L);
     }
 
-    public void testKeys3() throws Exception {
+    @Test void testKeys3() throws Exception {
         loadOntologyWithAxioms("Declaration( Class( :GriffinFamilyMember ) )"
                 + "Declaration( DataProperty( :hasName ) )" + "HasKey( :GriffinFamilyMember () ( :hasName ) )"
                 + "DataPropertyAssertion( :hasName :Peter \"Peter\" )" + "ClassAssertion( :GriffinFamilyMember :Peter )"
@@ -547,7 +546,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertTrue(!m_reasoner.isEntailed(m_dataFactory.getOWLSameIndividualAxiom(peter, stpeter)));
     }
 
-    public void testEquivalentClassInstances() throws Exception {
+    @Test void testEquivalentClassInstances() throws Exception {
         loadOntologyWithAxioms(
                 "Declaration(Class(:Car))" + "Declaration(Class(:Automobile))" + "Declaration(NamedIndividual(:car))"
                         + "Declaration(NamedIndividual(:auto))" + "EquivalentClasses(:Car :Automobile)"
@@ -558,7 +557,7 @@ public class ReasonerTest extends AbstractReasonerTest {
     }
 
     @SuppressWarnings("unchecked")
-    public void testObjectPropertySubsumptionsNoNominals() throws Exception {
+    @Test void testObjectPropertySubsumptionsNoNominals() throws Exception {
         loadOntologyWithAxioms("Declaration(ObjectProperty(:op1))" + "Declaration(ObjectProperty(:op2))"
                 + "Declaration(ObjectProperty(:op3))"
                 + "SubClassOf(ObjectSomeValuesFrom(:op1 owl:Thing) ObjectSomeValuesFrom(:op2 owl:Thing))"
@@ -569,7 +568,7 @@ public class ReasonerTest extends AbstractReasonerTest {
     }
 
     @SuppressWarnings("unchecked")
-    public void testObjectPropertySubsumptionsNominals() throws Exception {
+    @Test void testObjectPropertySubsumptionsNominals() throws Exception {
         loadOntologyWithAxioms("Declaration(NamedIndividual(:a))" + "Declaration(NamedIndividual(:b))"
                 + "Declaration(ObjectProperty(:op1))" + "Declaration(ObjectProperty(:op2))"
                 + "ObjectPropertyAssertion(:op1 :a :b)" + "ObjectPropertyDomain(:op2 ObjectOneOf(:a))"
@@ -578,7 +577,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertDirectSuperObjectProperties("op2", EQ("op1"));
     }
 
-    public void testBottomObjectPropertyAssertion() throws Exception {
+    @Test void testBottomObjectPropertyAssertion() throws Exception {
         loadOntologyWithAxioms("Declaration(NamedIndividual(:a))" + "Declaration(NamedIndividual(:b))"
                 + "Declaration(NamedIndividual(:c))" + "Declaration(ObjectProperty(:r))"
                 + "Declaration(ObjectProperty(:s))"
@@ -589,7 +588,7 @@ public class ReasonerTest extends AbstractReasonerTest {
     }
 
     @SuppressWarnings("unchecked")
-    public void testDataPropertyEntailment() throws Exception {
+    @Test void testDataPropertyEntailment() throws Exception {
         loadOntologyWithAxioms("Declaration(DataProperty(:d1))" + "Declaration(DataProperty(:d2))"
                 + "SubClassOf(owl:Thing DataSomeValuesFrom(:d1 xsd:int))"
                 + "SubClassOf(owl:Thing DataAllValuesFrom(:d1 DatatypeRestriction(xsd:int xsd:minInclusive \"1\"^^xsd:int xsd:maxInclusive \"1\"^^xsd:int)))"
@@ -598,7 +597,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertDirectSuperDataProperties("d1", EQ("d2"));
     }
 
-    public void testPropertyInstanceRetrieval() throws Exception {
+    @Test void testPropertyInstanceRetrieval() throws Exception {
         loadOntologyWithAxioms("Declaration(ObjectProperty(:r))" + "Declaration(ObjectProperty(:rp))"
                 + "Declaration(ObjectProperty(:s1))" + "Declaration(ObjectProperty(:s2))"
                 + "Declaration(ObjectProperty(:s))" + "Declaration(ObjectProperty(:t))"
@@ -643,7 +642,7 @@ public class ReasonerTest extends AbstractReasonerTest {
                 && result.get(NS_NI("b")).contains(NS_NI("a")) && result.get(NS_NI("b")).size() == 2);
     }
 
-    public void testClassificationSubClassBug() throws Exception {
+    @Test void testClassificationSubClassBug() throws Exception {
         loadOntologyWithAxioms("Declaration(Class(:c1)) \n" + "Declaration(Class(:ps1)) \n"
                 + "Declaration(Class(:DomainEntity)) \n" + "Declaration(Class(:ps3)) \n"
                 + "Declaration(Class(:c4)) \n" + "Declaration(Class(:PetalShape)) \n"
@@ -670,7 +669,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSubsumedBy("c2", "c4", true);
     }
 
-    public void testNegativeObjectPropertyAssertionWithNonSimple() throws Exception {
+    @Test void testNegativeObjectPropertyAssertionWithNonSimple() throws Exception {
         loadOntologyWithAxioms(
                 "Declaration(Class(:A))" + "Declaration(NamedIndividual(:a))" + "Declaration(NamedIndividual(:b))"
                         + "Declaration(ObjectProperty(:r))" + "Declaration(ObjectProperty(:t))"
@@ -681,7 +680,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isConsistent());
     }
 
-    public void testPropertyEnailmentFromAlan() throws Exception {
+    @Test void testPropertyEnailmentFromAlan() throws Exception {
         loadOntologyWithAxioms("Declaration(Class(:a))" + "Declaration(NamedIndividual(:a1))"
                 + "Declaration(ObjectProperty(:p1))" + "Declaration(ObjectProperty(:p2))"
                 + "EquivalentClasses(:a ObjectOneOf(:a1))" + "ObjectPropertyDomain(:p1 :a)"
@@ -693,7 +692,7 @@ public class ReasonerTest extends AbstractReasonerTest {
     }
 
     @SuppressWarnings("unchecked")
-    public void testSubProperties() throws Exception {
+    @Test void testSubProperties() throws Exception {
         loadOntologyWithAxioms("Declaration(ObjectProperty(:r1))" + "Declaration(ObjectProperty(:r2))"
                 + "Declaration(ObjectProperty(:r3))" + "Declaration(ObjectProperty(:s1))"
                 + "Declaration(ObjectProperty(:s2))" + "Declaration(ObjectProperty(:s3))"
@@ -763,7 +762,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertDirectSuperObjectPropertiesOfInverse("http://www.w3.org/2002/07/owl#topObjectProperty");
     }
 
-    public void testUnknownClassHierarcyPosition() throws Exception {
+    @Test void testUnknownClassHierarcyPosition() throws Exception {
         loadOntologyWithAxioms("SubClassOf( owl:Thing ObjectOneOf( :ind ) )" + "ClassAssertion(:A :i)");
         createReasoner();
 
@@ -771,7 +770,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertTrue(m_reasoner.getSuperClasses(NS_C("D"), true).containsEntity(NS_C("A")));
     }
 
-    public void testUnknownDatatypes() throws Exception {
+    @Test void testUnknownDatatypes() throws Exception {
         loadOntologyWithAxioms("Declaration(DataProperty(:dp1))" + "Declaration(DataProperty(:dp2))"
                 + "Declaration(Datatype(<internal:unknown-datatype#A>))" + "Declaration(Class(:A))"
                 + "DataPropertyRange(:dp1 DataOneOf( \"1\"^^xsd:integer ) )"
@@ -785,7 +784,7 @@ public class ReasonerTest extends AbstractReasonerTest {
     }
 
     @SuppressWarnings("unchecked")
-    public void testRoleChains() throws Exception {
+    @Test void testRoleChains() throws Exception {
         loadOntologyWithAxioms("Declaration(ObjectProperty(:s1))" + "Declaration(ObjectProperty(:r))"
                 + "Declaration(ObjectProperty(:s2))"
 
@@ -796,7 +795,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertDirectSuperObjectProperties("s1", EQ("s2"));
     }
 
-    public void testRoleChainsWithTransitiveSymmetric() throws Exception {
+    @Test void testRoleChainsWithTransitiveSymmetric() throws Exception {
         loadOntologyWithAxioms("Declaration(ObjectProperty(:r))" + "Declaration(ObjectProperty(:p))"
                 + "Declaration(ObjectProperty(:s))" + "Declaration(ObjectProperty(:t))"
 
@@ -811,7 +810,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isConsistent());
     }
 
-    public void testRoleSubsumptionWithChainsTransitiveSymmetric() throws Exception {
+    @Test void testRoleSubsumptionWithChainsTransitiveSymmetric() throws Exception {
         loadOntologyWithAxioms("Declaration(ObjectProperty(:r))" + "Declaration(ObjectProperty(:p))"
                 + "Declaration(ObjectProperty(:s))" + "Declaration(ObjectProperty(:t))"
 
@@ -823,7 +822,7 @@ public class ReasonerTest extends AbstractReasonerTest {
     }
 
     @SuppressWarnings("unchecked")
-    public void testRoleSubsumption() throws Exception {
+    @Test void testRoleSubsumption() throws Exception {
         loadOntologyWithAxioms("ObjectPropertyDomain(:r ObjectOneOf(:a)) ObjectPropertyRange(:r ObjectOneOf(:b)) "
                 + " ObjectPropertyAssertion(:r :a :b) ObjectPropertyAssertion(:t :a :c) ObjectPropertyAssertion(:t :c :b) "
                 + " TransitiveObjectProperty(:t)");
@@ -831,7 +830,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertDirectSuperObjectProperties("r", EQ("t"));
     }
 
-    public void testIsFunctionalData() throws Exception {
+    @Test void testIsFunctionalData() throws Exception {
         loadOntologyWithAxioms("FunctionalDataProperty(:DP) SubDataPropertyOf(:SDP :DP)");
         createReasoner();
 
@@ -844,7 +843,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isEntailed(m_dataFactory.getOWLFunctionalDataPropertyAxiom(andp)));
     }
 
-    public void testIsFunctionalObject() throws Exception {
+    @Test void testIsFunctionalObject() throws Exception {
         loadOntologyWithAxioms("FunctionalObjectProperty(:OP) SubObjectPropertyOf(:SOP :OP)");
         createReasoner();
 
@@ -862,7 +861,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isEntailed(m_dataFactory.getOWLInverseFunctionalObjectPropertyAxiom(anop)));
     }
 
-    public void testIsInverseFunctionalObject() throws Exception {
+    @Test void testIsInverseFunctionalObject() throws Exception {
         loadOntologyWithAxioms("InverseFunctionalObjectProperty(:OP) SubObjectPropertyOf(:SOP :OP)");
         createReasoner();
 
@@ -880,7 +879,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isEntailed(m_dataFactory.getOWLInverseFunctionalObjectPropertyAxiom(anop)));
     }
 
-    public void testIsReflexiveObject() throws Exception {
+    @Test void testIsReflexiveObject() throws Exception {
         loadOntologyWithAxioms("ReflexiveObjectProperty(:OP) SubObjectPropertyOf(:OP :SOP)");
         createReasoner();
 
@@ -893,7 +892,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isEntailed(m_dataFactory.getOWLReflexiveObjectPropertyAxiom(anop)));
     }
 
-    public void testIsIrreflexiveObject() throws Exception {
+    @Test void testIsIrreflexiveObject() throws Exception {
         loadOntologyWithAxioms("IrreflexiveObjectProperty(:OP) SubObjectPropertyOf(:SOP :OP)");
         createReasoner();
 
@@ -906,7 +905,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isEntailed(m_dataFactory.getOWLIrreflexiveObjectPropertyAxiom(anop)));
     }
 
-    public void testIsSymmetricObject() throws Exception {
+    @Test void testIsSymmetricObject() throws Exception {
         loadOntologyWithAxioms(
                 "SymmetricObjectProperty(:OP) SubObjectPropertyOf(:SOP1 :OP) SubObjectPropertyOf(:OP :SOP2)");
         createReasoner();
@@ -922,7 +921,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isEntailed(m_dataFactory.getOWLSymmetricObjectPropertyAxiom(anop)));
     }
 
-    public void testIsAsymmetricObject() throws Exception {
+    @Test void testIsAsymmetricObject() throws Exception {
         loadOntologyWithAxioms(
                 "AsymmetricObjectProperty(:OP) SubObjectPropertyOf(:SOP1 :OP) SubObjectPropertyOf(:OP :SOP2)");
         createReasoner();
@@ -938,7 +937,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isEntailed(m_dataFactory.getOWLAsymmetricObjectPropertyAxiom(anop)));
     }
 
-    public void testIsTransitiveObject() throws Exception {
+    @Test void testIsTransitiveObject() throws Exception {
         loadOntologyWithAxioms(
                 "TransitiveObjectProperty(:OP) SubObjectPropertyOf(:SOP1 :OP) SubObjectPropertyOf(:OP :SOP2)");
         createReasoner();
@@ -954,7 +953,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isEntailed(m_dataFactory.getOWLTransitiveObjectPropertyAxiom(anop)));
     }
 
-    public void testLearningBacktracking() throws Exception {
+    @Test void testLearningBacktracking() throws Exception {
         String axioms = "SubClassOf(owl:Thing ObjectIntersectionOf(ObjectUnionOf(:C :D1) ObjectUnionOf(:C :D2) ObjectUnionOf(:C :D3) ObjectUnionOf(:C :D4) ObjectUnionOf(:C :D5) ObjectSomeValuesFrom(:r ObjectAllValuesFrom(ObjectInverseOf(:r) ObjectComplementOf(:C)))))";
         loadOntologyWithAxioms(axioms);
         Set<OWLAxiom> assertions = new HashSet<>();
@@ -984,7 +983,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertTrue(cm1.getNumberOfBacktrackings() > cm2.getNumberOfBacktrackings());
     }
 
-    public void testSameAs() throws Exception {
+    @Test void testSameAs() throws Exception {
         String axioms = "Declaration(NamedIndividual(:a1))" + "Declaration(NamedIndividual(:a2))"
                 + "Declaration(Class(:A))" + "ClassAssertion(:A :a1)" + "SameIndividual(:a1 :a2)";
         loadOntologyWithAxioms(axioms);
@@ -994,7 +993,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertTrue(m_reasoner.hasType(a2, A, false));
     }
 
-    public void testObjectPropertyDomainsTimothyBug() throws Exception {
+    @Test void testObjectPropertyDomainsTimothyBug() throws Exception {
         String axioms = "EquivalentClasses(:B ObjectSomeValuesFrom(:q owl:Thing))" + "SubClassOf(:B :A)";
         loadOntologyWithAxioms(axioms);
         OWLClass A = m_dataFactory.getOWLClass(IRI.create(AbstractOntologyTest.NS + "A"));
@@ -1011,12 +1010,12 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertEquals(1L, resultDirect.entities().count());
     }
 
-    public void testDatatypeLiterals() throws Exception {
+    @Test void testDatatypeLiterals() throws Exception {
         loadReasonerFromResource("res/FS2RDF-literals-ar-consistent.f.owl");
         assertABoxSatisfiable(true);
     }
 
-    public void testIndividualRetrievalBug() throws Exception {
+    @Test void testIndividualRetrievalBug() throws Exception {
         String axioms = "ClassAssertion(:A :d)" + "ObjectPropertyAssertion(:r :c :d)";
         loadOntologyWithAxioms(axioms);
 
@@ -1028,7 +1027,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertTrue(result.containsEntity(d));
     }
 
-    public void testDirect() throws Exception {
+    @Test void testDirect() throws Exception {
         String buffer = "Declaration(Class(:A))\n"
         +"Declaration(Class(:B))\n"
         +"Declaration(Class(:C))\n"
@@ -1053,7 +1052,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertTrue(contains(result.entities(), c));
     }
 
-    public void testIndividualRetrieval() throws Exception {
+    @Test void testIndividualRetrieval() throws Exception {
         String buffer = "Declaration(Class(:C))\n"
         +"Declaration(Class(:D))\n"
         +"Declaration(Class(:E))\n"
@@ -1097,7 +1096,7 @@ public class ReasonerTest extends AbstractReasonerTest {
     // for restricting byte is supposed to use
     // only values from the value space of byte, which \"4.5\"^^xsd:decimal
     // isn't
-    public void testDataTypeRestriction() throws Exception {
+    @Test void testDataTypeRestriction() throws Exception {
         String axioms = "SubClassOf(:A DataAllValuesFrom(:dp DatatypeRestriction(xsd:byte xsd:minInclusive \"4.5\"^^xsd:decimal xsd:maxInclusive \"7\"^^xsd:short)))"
                 + "SubClassOf(:A DataAllValuesFrom(:dp DatatypeRestriction(xsd:decimal xsd:minInclusive \"6.0\"^^xsd:decimal xsd:maxInclusive \"6.8\"^^xsd:decimal)))"
                 + "SubClassOf(:A DataSomeValuesFrom(:dp owl:real))" + "ClassAssertion(:A :a)"
@@ -1106,7 +1105,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testAnonymousIndividualConstraints() {
+    @Test void testAnonymousIndividualConstraints() {
         String axioms = "SameIndividual(:a _:anon1)";
         try {
             loadReasonerWithAxioms(axioms);
@@ -1115,7 +1114,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         }
     }
 
-    public void testAnonymousIndividualConstraints2() {
+    @Test void testAnonymousIndividualConstraints2() {
         String axioms = "DifferentIndividuals(:a _:anon1)";
         try {
             loadReasonerWithAxioms(axioms);
@@ -1124,7 +1123,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         }
     }
 
-    public void testAnonymousIndividualConstraints3() {
+    @Test void testAnonymousIndividualConstraints3() {
         String axioms = "NegativeObjectPropertyAssertion(:r :a _:anon1)";
         try {
             loadReasonerWithAxioms(axioms);
@@ -1133,7 +1132,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         }
     }
 
-    public void testAnonymousIndividualConstraints4() {
+    @Test void testAnonymousIndividualConstraints4() {
         String axioms = "NegativeDataPropertyAssertion(:r _:anon1 \"test\")";
         try {
             loadReasonerWithAxioms(axioms);
@@ -1142,7 +1141,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         }
     }
 
-    public void testTransitivity() throws Exception {
+    @Test void testTransitivity() throws Exception {
         String axioms = "ObjectPropertyRange(:isSiblingOf :Person)" + "DisjointClasses(:Person :Sex)"
                 + "SubClassOf(:Person ObjectSomeValuesFrom(:hasGender :Sex))" + "TransitiveObjectProperty(:isSiblingOf)"
                 + "SymmetricObjectProperty(:isSiblingOf)";
@@ -1150,7 +1149,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(true);
     }
 
-    public void testSubAndSuperConcepts() throws Exception {
+    @Test void testSubAndSuperConcepts() throws Exception {
         String axioms = "SubClassOf(:C :D)" + "SubClassOf(:D :E)";
         loadReasonerWithAxioms(axioms);
         OWLClass c = m_dataFactory.getOWLClass(IRI.create("file:/c/test.owl#C"));
@@ -1182,7 +1181,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isEntailed(m_dataFactory.getOWLSubClassOfAxiom(e, d)));
     }
 
-    public void testSubAndSuperRoles() throws Exception {
+    @Test void testSubAndSuperRoles() throws Exception {
         String axioms = "SubObjectPropertyOf(:r :s)" + "SubObjectPropertyOf(:s :t)";
         loadReasonerWithAxioms(axioms);
         OWLObjectProperty r = m_dataFactory.getOWLObjectProperty(IRI.create("file:/c/test.owl#r"));
@@ -1213,7 +1212,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isEntailed(m_dataFactory.getOWLSubObjectPropertyOfAxiom(t, s)));
     }
 
-    public void testSubRolesChain() throws Exception {
+    @Test void testSubRolesChain() throws Exception {
         String axioms = "SubObjectPropertyOf(ObjectPropertyChain(:r) :s)";
         loadReasonerWithAxioms(axioms);
         OWLObjectProperty r = m_dataFactory.getOWLObjectProperty(IRI.create("file:/c/test.owl#r"));
@@ -1222,7 +1221,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertTrue(m_reasoner.getSubObjectProperties(s, true).containsEntity(r));
     }
 
-    public void testHasKeyEntailment() throws Exception {
+    @Test void testHasKeyEntailment() throws Exception {
         String axioms = "HasKey( :Person () ( :hasSSN ) )" + "SubClassOf( :Man :Person )";
         loadReasonerWithAxioms(axioms);
         OWLClass C = m_dataFactory.getOWLClass(IRI.create(AbstractOntologyTest.NS + "Man"));
@@ -1230,7 +1229,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertEntails(m_dataFactory.getOWLHasKeyAxiom(C, p), true);
     }
 
-    public void testHasKeyNonEntailment() throws Exception {
+    @Test void testHasKeyNonEntailment() throws Exception {
         String axioms = "HasKey( :Person () ( :hasSSN ) )" + "SubClassOf( :Man :Person )"
                 + "SubClassOf( :Person :Mammal )";
         loadReasonerWithAxioms(axioms);
@@ -1239,7 +1238,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertEntails(m_dataFactory.getOWLHasKeyAxiom(C, p), false);
     }
 
-    public void testDatatypeDefEntailment() throws Exception {
+    @Test void testDatatypeDefEntailment() throws Exception {
         String axioms = "DatatypeDefinition(:SSN DatatypeRestriction(xsd:string xsd:pattern \"[0-9]{3}-[0-9]{2}-[0-9]{4}\"))";
         loadReasonerWithAxioms(axioms);
         OWLDatatype dt = m_dataFactory.getOWLDatatype(IRI.create(AbstractOntologyTest.NS + "SSN"));
@@ -1251,7 +1250,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertEntails(ddef, true);
     }
 
-    public void testDomainRange() throws Exception {
+    @Test void testDomainRange() throws Exception {
         String axioms = "Declaration(DataProperty(:p1))" + "Declaration(DataProperty(:p2))"
                 + "Declaration(DataProperty(:p3))" + "Declaration(DataProperty(:p4))" + "Declaration(DataProperty(:p5))"
                 + "Declaration(DataProperty(:p6))" + "Declaration(Class(:c2))" + "Declaration(Class(:c3))"
@@ -1263,7 +1262,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(true);
     }
 
-    public void testDateTime2() throws Exception {
+    @Test void testDateTime2() throws Exception {
         String axioms = "SubClassOf(:A DataSomeValuesFrom(:dp DatatypeRestriction(xsd:dateTime xsd:minInclusive \"2008-10-08T20:44:11.656+01:00\"^^xsd:dateTime)))"
                 + "SubClassOf(:A DataAllValuesFrom(:dp DatatypeRestriction(xsd:dateTime xsd:maxInclusive \"2008-10-08T20:44:11.656+01:00\"^^xsd:dateTime)))"
                 + "ClassAssertion(:A :a)";
@@ -1271,7 +1270,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(true);
     }
 
-    public void testChains1() throws Exception {
+    @Test void testChains1() throws Exception {
         String axioms = "TransitiveObjectProperty(:p)" + "SubObjectPropertyOf(ObjectPropertyChain(:p1 :p :p2) :S) ";
         loadReasonerWithAxioms(axioms);
         OWLDataFactory df = OWLManager.createOWLOntologyManager().getOWLDataFactory();
@@ -1288,7 +1287,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertEntails(ax, true);
     }
 
-    public void testChains2() throws Exception {
+    @Test void testChains2() throws Exception {
         String axioms = "ObjectPropertyAssertion(:p :a :b)" + "ObjectPropertyAssertion(:q :b :c)"
                 + "SubObjectPropertyOf(ObjectPropertyChain(:p :q) :p)" + "ObjectPropertyAssertion(:p :a :b)"
                 + "ObjectPropertyAssertion(:q :b :c)" + "NegativeObjectPropertyAssertion(:p :a :c)";
@@ -1296,7 +1295,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testChains3() throws Exception {
+    @Test void testChains3() throws Exception {
         String axioms = "TransitiveObjectProperty( :p)";
         loadReasonerWithAxioms(axioms);
         OWLDataFactory df = OWLManager.createOWLOntologyManager().getOWLDataFactory();
@@ -1308,7 +1307,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertEntails(ax, true);
     }
 
-    public void testChains4() throws Exception {
+    @Test void testChains4() throws Exception {
         String axioms = "SubObjectPropertyOf( ObjectPropertyChain( :t :t ) :t )" + "ObjectPropertyAssertion(:t :a :b)"
                 + "ObjectPropertyAssertion(:t :b :c)" + "ClassAssertion(ObjectAllValuesFrom(:t :A) :a)"
                 + "ClassAssertion(ObjectComplementOf(:A) :c)";
@@ -1316,14 +1315,14 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testAnonymousIndiviuals1() throws Exception {
+    @Test void testAnonymousIndiviuals1() throws Exception {
         String axioms = "SubClassOf(:r ObjectAllValuesFrom(:p :c))" + "ClassAssertion(:r :i)"
                 + "ClassAssertion(ObjectComplementOf(:c) _:o)" + "ObjectPropertyAssertion( :p :i _:o )";
         loadReasonerWithAxioms(axioms);
         assertABoxSatisfiable(false);
     }
 
-    public void testDateTime() throws Exception {
+    @Test void testDateTime() throws Exception {
         String axioms = "SubClassOf(:A DataHasValue(:dp \"2007-10-08T20:44:11.656+01:00\"^^xsd:dateTime))"
                 + "SubClassOf(:A DataAllValuesFrom(:dp DatatypeRestriction(xsd:dateTime xsd:minInclusive \"2008-07-08T20:44:11.656+01:00\"^^xsd:dateTime xsd:maxInclusive \"2008-10-08T20:44:11.656+01:00\"^^xsd:dateTime)))"
                 + "ClassAssertion(:A :a)";
@@ -1331,7 +1330,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testDataRanges() throws Exception {
+    @Test void testDataRanges() throws Exception {
         String axioms = "SubClassOf(:A DataAllValuesFrom(:dp owl:real))"
                 + "SubClassOf(:A DataSomeValuesFrom(:dp DataOneOf(\"-INF\"^^xsd:float \"-0\"^^xsd:integer)) )"
                 + "ClassAssertion(:A :a)";
@@ -1340,13 +1339,13 @@ public class ReasonerTest extends AbstractReasonerTest {
     }
 
     // needs proper implementation of BottomDataProperty
-    public void testBottomDataProperty() throws Exception {
+    @Test void testBottomDataProperty() throws Exception {
         String axioms = "ClassAssertion( DataSomeValuesFrom( owl:bottomDataProperty rdfs:Literal ) :i )";
         loadReasonerWithAxioms(axioms);
         assertABoxSatisfiable(false);
     }
 
-    public void testChains() throws Exception {
+    @Test void testChains() throws Exception {
         String axioms = "SubObjectPropertyOf( ObjectPropertyChain( :hasMother :hasSister ) :hasAunt )"
                 + "ObjectPropertyAssertion( :hasMother :Stewie :Lois )"
                 + "ObjectPropertyAssertion( :hasSister :Lois :Carol )"
@@ -1355,7 +1354,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testHasKeysOnlyNamed() throws Exception {
+    @Test void testHasKeysOnlyNamed() throws Exception {
         String axioms = "Declaration( Class( :Person ) )" + "Declaration( Class( :Man ) )"
                 + "Declaration( DataProperty( :hasSSN ) )" + "Declaration( ObjectProperty( :marriedTo ) )"
                 + "HasKey( :Person () ( :hasSSN ) )" + "DataPropertyAssertion( :hasSSN :Peter \"123-45-6789\" )"
@@ -1366,7 +1365,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(true);
     }
 
-    public void testNegativeDataPropertyAssertion() throws Exception {
+    @Test void testNegativeDataPropertyAssertion() throws Exception {
         String axioms = "Declaration( DataProperty( :hasAge ) )"
                 + "NegativeDataPropertyAssertion( :hasAge :Meg \"5\"^^xsd:integer )"
                 + "DataPropertyAssertion( :hasAge :Meg \"5\"^^xsd:integer )";
@@ -1374,7 +1373,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testKeys() throws Exception {
+    @Test void testKeys() throws Exception {
         String axioms = "Declaration(Class(:RegisteredPatient))" + "Declaration(DataProperty(:hasWaitingListN))"
                 + "SubDataPropertyOf(:hasWaitingListN owl:topDataProperty)"
                 + "Declaration(NamedIndividual(:TestPatient1))" + "ClassAssertion(:RegisteredPatient :TestPatient1)"
@@ -1387,7 +1386,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testKeysNegatedClass() throws Exception {
+    @Test void testKeysNegatedClass() throws Exception {
         String axioms = "Declaration(Class(:RegisteredPatient))" + "Declaration(Class(:Staff))"
                 + "Declaration(DataProperty(:hasWaitingListN))" + "Declaration(NamedIndividual(:TestPatient1))"
                 + "Declaration(NamedIndividual(:TestPatient2))" + "DisjointClasses(:Staff :RegisteredPatient)"
@@ -1402,7 +1401,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testNonUnaryKeys() throws Exception {
+    @Test void testNonUnaryKeys() throws Exception {
         String axioms = "HasKey(:Car () (:licensePlate :nationality))" + "ClassAssertion(:Car :myCar1)"
                 + "ClassAssertion(:Car :myCar2)" + "ClassAssertion(:Car :myCar3)"
                 + "DataPropertyAssertion(:licensePlate :myCar1 \"OD-SG-101\")"
@@ -1415,7 +1414,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testNonUnaryKeys2() throws Exception {
+    @Test void testNonUnaryKeys2() throws Exception {
         String axioms = "HasKey(:Car () (:licensePlate :nationality))" + "ClassAssertion(:Car :myCar1)"
                 + "ClassAssertion(:Car :myCar2)" + "ClassAssertion(:Car :myCar3)"
                 + "DataPropertyAssertion(:licensePlate :myCar1 \"OD-SG-101\")"
@@ -1429,7 +1428,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(true);
     }
 
-    public void testHierarchyPrinting1() throws Exception {
+    @Test void testHierarchyPrinting1() throws Exception {
         String axioms = "SubClassOf( :A :B )" + "SubClassOf( :D :A )" + "SubClassOf( :C :B )" + "SubClassOf( :D :C )"
                 + "SubClassOf( :F :D )" + "SubClassOf( :F :E )" + "SubClassOf( :H :E )" + "SubClassOf( :G owl:Nothing )"
                 + "SubClassOf( owl:Thing :I )" + "SubClassOf( <http://my.com/test2#J> :D )" + "EquivalentClasses( :A <"
@@ -1454,7 +1453,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertHierarchies("res/hierarchy-printing-1.txt");
     }
 
-    public void testHierarchyPrinting2() throws Exception {
+    @Test void testHierarchyPrinting2() throws Exception {
         String axioms = "SubClassOf( :A :B )" + "SubClassOf( :D :A )" + "SubClassOf( :C :B )" + "SubClassOf( :D :C )"
                 + "SubClassOf( :F :D )" + "SubClassOf( :F :E )" + "SubClassOf( :H :E )"
                 + "SubClassOf( <http://my.com/test2#J> :D )" + "EquivalentClasses( :A <" + NS + "Class> )"
@@ -1473,14 +1472,14 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertHierarchies("res/hierarchy-printing-2.txt");
     }
 
-    public void testHierarchyPrinting3() throws Exception {
+    @Test void testHierarchyPrinting3() throws Exception {
         String axioms = "SubClassOf( :A :B )" + "SubClassOf( owl:Thing owl:Nothing )";
         loadReasonerWithAxioms(axioms);
         assertHierarchies("res/hierarchy-printing-3.txt");
     }
 
     @SuppressWarnings("unchecked")
-    public void testObjectPropertyHierarchy() throws Exception {
+    @Test void testObjectPropertyHierarchy() throws Exception {
         String axioms = "SubObjectPropertyOf( :r4 :r2 ) " + "SubObjectPropertyOf( :r4 :r3 ) "
                 + "SubObjectPropertyOf( :r3 :r5 ) " + "SubObjectPropertyOf( :r5 :r3 ) "
                 + "SubObjectPropertyOf( ObjectInverseOf(:r2) ObjectInverseOf(:r1) ) "
@@ -1502,7 +1501,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertDirectSuperObjectProperties("r6", EQ("r2"), EQInv("r2"));
     }
 
-    public void testSemanticObjectPropertyClassification() throws Exception {
+    @Test void testSemanticObjectPropertyClassification() throws Exception {
         String axioms = "ObjectPropertyRange( :r ObjectOneOf( :a ) ) " + "ObjectPropertyRange( :s ObjectOneOf( :a ) ) "
                 + "EquivalentClasses( ObjectSomeValuesFrom( :r owl:Thing ) ObjectSomeValuesFrom( :s owl:Thing ) ) ";
         loadReasonerWithAxioms(axioms);
@@ -1510,7 +1509,7 @@ public class ReasonerTest extends AbstractReasonerTest {
     }
 
     @SuppressWarnings("unchecked")
-    public void testDataPropertyHierarchy() throws Exception {
+    @Test void testDataPropertyHierarchy() throws Exception {
         String axioms = "SubDataPropertyOf( :r4 :r2 ) " + "SubDataPropertyOf( :r4 :r3 ) "
                 + "SubDataPropertyOf( :r3 :r5 ) " + "SubDataPropertyOf( :r5 :r3 ) " + "SubDataPropertyOf( :r2 :r1 ) "
                 + "SubDataPropertyOf( :r3 :r1 ) " + "SubDataPropertyOf( :r4 :r1 ) " + "SubDataPropertyOf( :r6 :r2 ) ";
@@ -1530,7 +1529,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertDirectSuperDataProperties("r6", EQ("r2"));
     }
 
-    public void testDataPropertySemantics() throws Exception {
+    @Test void testDataPropertySemantics() throws Exception {
         String axioms = "DataPropertyRange( :r xsd:nonNegativeInteger ) "
                 + "DataPropertyRange( :r xsd:nonPositiveInteger ) " + "DataPropertyRange( :s xsd:nonNegativeInteger ) "
                 + "DataPropertyRange( :s xsd:nonPositiveInteger ) "
@@ -1541,7 +1540,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isConsistent());
     }
 
-    public void testSemanticDataPropertyClassification() throws Exception {
+    @Test void testSemanticDataPropertyClassification() throws Exception {
         String axioms = "DataPropertyRange( :r xsd:nonNegativeInteger ) "
                 + "DataPropertyRange( :r xsd:nonPositiveInteger ) " + "DataPropertyRange( :s xsd:nonNegativeInteger ) "
                 + "DataPropertyRange( :s xsd:nonPositiveInteger ) "
@@ -1550,7 +1549,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertEquivalentDataProperties("r", IRIs("s", "r"));
     }
 
-    public void testComplexConceptInstanceRetrieval() throws Exception {
+    @Test void testComplexConceptInstanceRetrieval() throws Exception {
         String axioms = "EquivalentClasses(:a ObjectSomeValuesFrom(:r :b)) "
                 + "EquivalentClasses(:c ObjectSomeValuesFrom(:r :d)) " + "SubClassOf(:b :e) " + "SubClassOf(:d :e) "
                 + "ClassAssertion(:a :i1) " + "ClassAssertion(:c :i2) " + "ObjectPropertyAssertion(:r :i3 :i4) "
@@ -1570,7 +1569,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertInstancesOf(some_r_e, true, IRIs("i3"));
     }
 
-    public void testWidmann1() throws Exception {
+    @Test void testWidmann1() throws Exception {
         String axioms = "SubClassOf(owl:Thing ObjectSomeValuesFrom(:a :p)) "
                 + "SubClassOf(owl:Thing ObjectSomeValuesFrom(:b ObjectAllValuesFrom(:a ObjectSomeValuesFrom(:a ObjectComplementOf(:p))))) "
                 + "InverseObjectProperties(:a :a-)" + "InverseObjectProperties(:b :b-)"
@@ -1579,7 +1578,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testWidmann2() throws Exception {
+    @Test void testWidmann2() throws Exception {
         // <r>q;
         // <r->[r-][r][r][r]p
         String axioms = "SubClassOf(owl:Thing ObjectSomeValuesFrom(:r :q)) " + "InverseObjectProperties(:r :r-)"
@@ -1594,7 +1593,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testWidmann3() throws Exception {
+    @Test void testWidmann3() throws Exception {
         // <r-><r>[r]<r->~p;
         // <r-><r>p;
         // <r->[r-]<r-><r->[r][r]p;
@@ -1612,41 +1611,41 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testReflexivity() throws Exception {
+    @Test void testReflexivity() throws Exception {
         String axioms = "ReflexiveObjectProperty(:r) " + "ClassAssertion(ObjectAllValuesFrom(:r " + "owl:Nothing) :a) "
                 + "ClassAssertion(owl:Thing :a)";
         loadReasonerWithAxioms(axioms);
         assertABoxSatisfiable(false);
     }
 
-    public void testNegProperties() throws Exception {
+    @Test void testNegProperties() throws Exception {
         String axioms = "ObjectPropertyAssertion(:r :a :b) " + "ObjectPropertyAssertion(:r :b :c) "
                 + "TransitiveObjectProperty(:r) " + "NegativeObjectPropertyAssertion(:r :a :c)";
         loadReasonerWithAxioms(axioms);
         assertABoxSatisfiable(false);
     }
 
-    public void testIrreflexivity() throws Exception {
+    @Test void testIrreflexivity() throws Exception {
         String axioms = "IrreflexiveObjectProperty(:r) " + "ObjectPropertyAssertion(:r :a :a)";
         loadReasonerWithAxioms(axioms);
         assertABoxSatisfiable(false);
     }
 
-    public void testRoleDisjointness_1() throws Exception {
+    @Test void testRoleDisjointness_1() throws Exception {
         String axioms = "DisjointObjectProperties(:r :s :t) " + "ObjectPropertyAssertion(:r :a :b) "
                 + "ObjectPropertyAssertion(:s :a :b)";
         loadReasonerWithAxioms(axioms);
         assertABoxSatisfiable(false);
     }
 
-    public void testRoleDisjointness_2() throws Exception {
+    @Test void testRoleDisjointness_2() throws Exception {
         String axioms = "DisjointObjectProperties(:r :s :t) " + "ObjectPropertyAssertion(:r :a :b) "
                 + "ObjectPropertyAssertion(:t :a :b)";
         loadReasonerWithAxioms(axioms);
         assertABoxSatisfiable(false);
     }
 
-    public void testRoleDisjointness2() throws Exception {
+    @Test void testRoleDisjointness2() throws Exception {
         String axioms = "DisjointObjectProperties(:r :s) " + "ClassAssertion(ObjectSomeValuesFrom(:r owl:Thing) :a) "
                 + "ClassAssertion(ObjectSomeValuesFrom(:s owl:Thing) :a) " + "ClassAssertion(:C :a) "
                 + "SubClassOf(:C ObjectMaxCardinality(1 :f)) " + "SubObjectPropertyOf(:r :f) "
@@ -1655,14 +1654,14 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testExistsSelf1() throws Exception {
+    @Test void testExistsSelf1() throws Exception {
         String axioms = "ClassAssertion(ObjectAllValuesFrom(:r " + "owl:Nothing) :a) "
                 + "ClassAssertion(ObjectHasSelf(:r) :a)";
         loadReasonerWithAxioms(axioms);
         assertABoxSatisfiable(false);
     }
 
-    public void testExistsSelf2() throws Exception {
+    @Test void testExistsSelf2() throws Exception {
         String axioms = "SubClassOf(:B1 ObjectSomeValuesFrom(:r :C2)) "
                 + "SubClassOf(:C2 ObjectSomeValuesFrom(:r :B2)) " + "SubClassOf(:B2 ObjectSomeValuesFrom(:r :C1)) "
                 + "SubClassOf(:C1 ObjectSomeValuesFrom(:r :B1)) " + "ClassAssertion(:C1 :a) "
@@ -1671,26 +1670,26 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(true);
     }
 
-    public void testAsymmetry() throws Exception {
+    @Test void testAsymmetry() throws Exception {
         String axioms = "AsymmetricObjectProperty(:as) " + "SubObjectPropertyOf(:r :as) "
                 + "ObjectPropertyAssertion(:as :b :a) " + "ObjectPropertyAssertion(:r :a :b)";
         loadReasonerWithAxioms(axioms);
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiability1() throws Exception {
+    @Test void testSatisfiability1() throws Exception {
         String axioms = "ClassAssertion(:C :a) " + "ClassAssertion(ObjectComplementOf(:C) :a)";
         loadReasonerWithAxioms(axioms);
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiability2() throws Exception {
+    @Test void testSatisfiability2() throws Exception {
         String axioms = "SubClassOf(owl:Thing :C) " + "SubClassOf(owl:Thing " + "ObjectComplementOf(:C))";
         loadReasonerWithAxioms(axioms);
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiability3() throws Exception {
+    @Test void testSatisfiability3() throws Exception {
         String axioms = "SubClassOf(:Person " + "ObjectSomeValuesFrom(:hasParent :Person)) "
                 + "SubClassOf(ObjectSomeValuesFrom(:hasParent " + "ObjectSomeValuesFrom(:hasParent :Person)) "
                 + " :Grandchild) " + "ClassAssertion(:Person :peter) " + "ClassAssertion("
@@ -1699,14 +1698,14 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiability4() throws Exception {
+    @Test void testSatisfiability4() throws Exception {
         String axioms = "FunctionalObjectProperty(:R) " + "ObjectPropertyAssertion(:R :a :b) "
                 + "SubClassOf(owl:Thing ObjectSomeValuesFrom(:R :C)) " + "ClassAssertion(ObjectComplementOf(:C) :b)";
         loadReasonerWithAxioms(axioms);
         assertABoxSatisfiable(false);
     }
 
-    public void testChanges() throws Exception {
+    @Test void testChanges() throws Exception {
         String axioms = "SubClassOf(owl:Thing :C)";
         loadReasonerWithAxioms(axioms);
         assertABoxSatisfiable(true);
@@ -1720,7 +1719,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(true);
     }
 
-    public void testSubsumption1() throws Exception {
+    @Test void testSubsumption1() throws Exception {
         String axioms = "SubClassOf(:Person :Animal) " + "SubClassOf(:Student :Person) " + "SubClassOf(:Dog :Animal)";
         loadReasonerWithAxioms(axioms);
         assertSubsumedBy("Student", "Animal", true);
@@ -1729,7 +1728,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSubsumedBy("Dog", "Student", false);
     }
 
-    public void testSubsumption2() throws Exception {
+    @Test void testSubsumption2() throws Exception {
         String axioms = "SubObjectPropertyOf(:R :S) " + "EquivalentClasses(:A ObjectSomeValuesFrom(:R :C)) "
                 + "EquivalentClasses(:B ObjectSomeValuesFrom(:S :C))";
         loadReasonerWithAxioms(axioms);
@@ -1737,7 +1736,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSubsumedBy("B", "A", false);
     }
 
-    public void testSubsumption3() throws Exception {
+    @Test void testSubsumption3() throws Exception {
         String axioms = "EquivalentObjectProperties(:R :S) " + "EquivalentClasses(:A ObjectSomeValuesFrom(:R :C)) "
                 + "EquivalentClasses(:B ObjectSomeValuesFrom(:S :C))";
         loadReasonerWithAxioms(axioms);
@@ -1745,7 +1744,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSubsumedBy("B", "A", true);
     }
 
-    public void testHeinsohnTBox1() throws Exception {
+    @Test void testHeinsohnTBox1() throws Exception {
         // Tests incoherency caused by disjoint concepts
         String axioms = "DisjointClasses(:c :d) SubClassOf(:e3 :c) " + "SubClassOf(:f :d) SubClassOf(:c1 :d1) "
                 + "DisjointClasses(:c1 :d1) EquivalentClasses(:complex1 "
@@ -1760,7 +1759,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable("c1", false);
     }
 
-    public void testHeinsohnTBox2() throws Exception {
+    @Test void testHeinsohnTBox2() throws Exception {
         // Tests incoherency caused by number restrictions
         String axioms = "DisjointClasses(:c :d)" + "EquivalentClasses(:complex1 "
                 + "ObjectIntersectionOf(ObjectMinCardinality(2 :r) " + "ObjectMaxCardinality(1 :r)))"
@@ -1771,7 +1770,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable("complex2", false);
     }
 
-    public void testHeinsohnTBox3c() throws Exception {
+    @Test void testHeinsohnTBox3c() throws Exception {
         // Tests incoherency caused by the role hierarchy and number
         // restrictions
         String axioms = "DisjointClasses(:c :d)" + "SubClassOf(:a ObjectIntersectionOf(:c :d))"
@@ -1785,7 +1784,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable("complex1", false);
     }
 
-    public void testHeinsohnTBox3cIrh() throws Exception {
+    @Test void testHeinsohnTBox3cIrh() throws Exception {
         // Tests incoherency caused by number restrictions
         String axioms = "DisjointClasses(:c :d) " + "EquivalentClasses(:a ObjectUnionOf(:c :d))"
                 + "EquivalentClasses(:complex1 ObjectIntersectionOf(" + "ObjectAllValuesFrom(:tt :a)"
@@ -1795,7 +1794,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable("complex1", false);
     }
 
-    public void testHeinsohnTBox3() throws Exception {
+    @Test void testHeinsohnTBox3() throws Exception {
         // Tests incoherency caused by number restrictions and role hierarchy
         String buffer = "DisjointClasses(:c :d :e)"
         +"SubClassOf(:a ObjectUnionOf(:c :d))"
@@ -1850,7 +1849,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSubsumedBy("complex4a", "complex4b", true);
     }
 
-    public void testHeinsohnTBox3Modified() throws Exception {
+    @Test void testHeinsohnTBox3Modified() throws Exception {
         String buffer = "DisjointClasses(:C :D)"
         +"SubClassOf(:A ObjectMaxCardinality(2 :r))"
         +"SubClassOf(:A ObjectSomeValuesFrom(:r :C))"
@@ -1860,7 +1859,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSubsumedBy("A", "B", true);
     }
 
-    public void testHeinsohnTBox4a() throws Exception {
+    @Test void testHeinsohnTBox4a() throws Exception {
         // Tests role restrictions
         loadReasonerWithAxioms("");
         OWLDataFactory df = OWLManager.createOWLOntologyManager().getOWLDataFactory();
@@ -1873,7 +1872,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSubsumedBy(desc1, desc2, true);
     }
 
-    public void testHeinsohnTBox4b() throws Exception {
+    @Test void testHeinsohnTBox4b() throws Exception {
         // Tests role restrictions
         String buffer = "DisjointClasses(:C :D)";
         loadReasonerWithAxioms(buffer);
@@ -1890,7 +1889,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSubsumedBy(desc1, desc2, true);
     }
 
-    public void testHeinsohnTBox7() throws Exception {
+    @Test void testHeinsohnTBox7() throws Exception {
         // Tests inverse roles
         loadReasonerWithAxioms("");
         OWLDataFactory df = OWLManager.createOWLOntologyManager().getOWLDataFactory();
@@ -1903,7 +1902,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSubsumedBy(desc1, A, true);
     }
 
-    public void testIanT1a() throws Exception {
+    @Test void testIanT1a() throws Exception {
         String buffer = "SubClassOf(:p1 ObjectComplementOf(ObjectUnionOf(:p2 :p3 :p4 :p5)))"
         +"SubClassOf(:p2 ObjectComplementOf(ObjectUnionOf(:p3 :p4 :p5)))"
         +"SubClassOf(:p3 ObjectComplementOf(ObjectUnionOf(:p4 :p5)))"
@@ -1922,7 +1921,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc1, false);
     }
 
-    public void testIanT1b() throws Exception {
+    @Test void testIanT1b() throws Exception {
         String buffer = "SubClassOf(:p1 ObjectComplementOf(ObjectUnionOf(:p2 :p3 :p4 :p5)))"
         +"SubClassOf(:p2 ObjectComplementOf(ObjectUnionOf(:p3 :p4 :p5)))"
         +"SubClassOf(:p3 ObjectComplementOf(ObjectUnionOf(:p4 :p5)))"
@@ -1939,7 +1938,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc1, true);
     }
 
-    public void testIanT1c() throws Exception {
+    @Test void testIanT1c() throws Exception {
         String buffer = "SubClassOf(:p1 ObjectComplementOf(ObjectUnionOf(:p2 :p3 :p4 :p5)))"
         +"SubClassOf(:p2 ObjectComplementOf(ObjectUnionOf(:p3 :p4 :p5)))"
         +"SubClassOf(:p3 ObjectComplementOf(ObjectUnionOf(:p4 :p5)))"
@@ -1958,7 +1957,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc1, false);
     }
 
-    public void testIanT2() throws Exception {
+    @Test void testIanT2() throws Exception {
         String buffer = "SubObjectPropertyOf(:r :f1)"
         +"SubObjectPropertyOf(:r :f2)"
         +"SubClassOf(:p1 ObjectComplementOf(:p2))"
@@ -1982,7 +1981,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc1, false);
     }
 
-    public void testIanT3() throws Exception {
+    @Test void testIanT3() throws Exception {
         String buffer = "SubClassOf(:p1 ObjectComplementOf(ObjectUnionOf(:p2 :p3 :p4 :p5)))"
         +"SubClassOf(:p2 ObjectComplementOf(ObjectUnionOf(:p3 :p4 :p5)))"
         +"SubClassOf(:p3 ObjectComplementOf(ObjectUnionOf(:p4 :p5)))"
@@ -2050,7 +2049,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, true);
     }
 
-    public void testIanT4() throws Exception {
+    @Test void testIanT4() throws Exception {
         String buffer = "TransitiveObjectProperty(:p)"
         +"InverseObjectProperties(:r :r-)"
         +"InverseObjectProperties(:p :p-)"
@@ -2075,7 +2074,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testIanT5() throws Exception {
+    @Test void testIanT5() throws Exception {
         String buffer = "InverseObjectProperties(:r :r-)"
         +"InverseObjectProperties(:f :f-)"
         +"TransitiveObjectProperty(:r)"
@@ -2094,7 +2093,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, true);
     }
 
-    public void testIanT6() throws Exception {
+    @Test void testIanT6() throws Exception {
         String buffer = "InverseObjectProperties(:r :r-)"
         +"InverseObjectProperties(:f :f-)"
         +"TransitiveObjectProperty(:r)"
@@ -2114,7 +2113,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testIanT7a() throws Exception {
+    @Test void testIanT7a() throws Exception {
         String buffer = "InverseObjectProperties(:r :r-)"
         +"InverseObjectProperties(:f :f-)"
         +"TransitiveObjectProperty(:r)"
@@ -2132,7 +2131,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testIanT7b() throws Exception {
+    @Test void testIanT7b() throws Exception {
         String buffer = "InverseObjectProperties(:r :r-)"
         +"InverseObjectProperties(:f :f-)"
         +"TransitiveObjectProperty(:r)"
@@ -2158,7 +2157,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, true);
     }
 
-    public void testIanT7c() throws Exception {
+    @Test void testIanT7c() throws Exception {
         String buffer = "InverseObjectProperties(:r :r-)"
         +"InverseObjectProperties(:f :f-)"
         +"TransitiveObjectProperty(:r)"
@@ -2176,7 +2175,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testIanT8a() throws Exception {
+    @Test void testIanT8a() throws Exception {
         String buffer = "InverseObjectProperties(:r :r-)";
         loadReasonerWithAxioms(buffer);
 
@@ -2197,7 +2196,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, true);
     }
 
-    public void testIanT8() throws Exception {
+    @Test void testIanT8() throws Exception {
         String buffer = "InverseObjectProperties(:r :r-)";
         loadReasonerWithAxioms(buffer);
 
@@ -2217,7 +2216,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testIanT9() throws Exception {
+    @Test void testIanT9() throws Exception {
         String buffer = "InverseObjectProperties(:successor :successor-)"
         +"TransitiveObjectProperty(:descendant)"
         +"SubObjectPropertyOf(:successor :descendant)"
@@ -2240,7 +2239,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testIanT10() throws Exception {
+    @Test void testIanT10() throws Exception {
         String buffer = "InverseObjectProperties(:s :s-)"
         +"InverseObjectProperties(:f :f-)"
         +"InverseObjectProperties(:f1 :f1-)"
@@ -2290,7 +2289,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testIanT11() throws Exception {
+    @Test void testIanT11() throws Exception {
         String buffer = "InverseObjectProperties(:s :s-)"
         +"SubObjectPropertyOf(:s :r)";
         loadReasonerWithAxioms(buffer);
@@ -2309,7 +2308,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testIanT12() throws Exception {
+    @Test void testIanT12() throws Exception {
         String buffer = "InverseObjectProperties(:r :r-)";
         loadReasonerWithAxioms(buffer);
 
@@ -2332,7 +2331,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testIanT13() throws Exception {
+    @Test void testIanT13() throws Exception {
         String buffer = "InverseObjectProperties(:s :s-)"
         +"EquivalentClasses(:a1 ObjectSomeValuesFrom(:s ObjectAllValuesFrom(:s- ObjectAllValuesFrom(:r :c))))"
         +"EquivalentClasses(:a2 ObjectSomeValuesFrom(:s ObjectAllValuesFrom(:s- ObjectAllValuesFrom(:r ObjectComplementOf(:c)))))"
@@ -2372,7 +2371,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testIanFact1() throws Exception {
+    @Test void testIanFact1() throws Exception {
         String buffer = "DisjointClasses(:a :b :c)";
         loadReasonerWithAxioms(buffer);
 
@@ -2385,7 +2384,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testIanFact2() throws Exception {
+    @Test void testIanFact2() throws Exception {
         String buffer = "SubClassOf(:c ObjectAllValuesFrom(:r :c))"
         +"SubClassOf(ObjectAllValuesFrom(:r :c) :d)";
         loadReasonerWithAxioms(buffer);
@@ -2393,7 +2392,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSubsumedBy("c", "d", true);
     }
 
-    public void testIanFact3() throws Exception {
+    @Test void testIanFact3() throws Exception {
         String buffer = "FunctionalObjectProperty(:f1)"
         +"FunctionalObjectProperty(:f2)"
         +"FunctionalObjectProperty(:f3)"
@@ -2414,7 +2413,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testIanFact4() throws Exception {
+    @Test void testIanFact4() throws Exception {
         String buffer = "FunctionalObjectProperty(:rx)"
         +"FunctionalObjectProperty(:rx3)"
         +"SubObjectPropertyOf(:rx3 :rx)"
@@ -2449,7 +2448,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSubsumedBy(desc1, desc2, false);
     }
 
-    public void testIanBug1b() throws Exception {
+    @Test void testIanBug1b() throws Exception {
         String buffer = "EquivalentClasses(:c ObjectIntersectionOf(:a ObjectComplementOf(:b)))"
         +"SubClassOf(:a ObjectIntersectionOf(:d ObjectComplementOf(:c)))";
         loadReasonerWithAxioms(buffer);
@@ -2464,7 +2463,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testIanBug3() throws Exception {
+    @Test void testIanBug3() throws Exception {
         // slow, but works!
         loadReasonerWithAxioms("");
 
@@ -2486,7 +2485,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, true);
     }
 
-    public void testIanBug4() throws Exception {
+    @Test void testIanBug4() throws Exception {
         String buffer = "InverseObjectProperties(:r :r-)"
         +"SubObjectPropertyOf(:r :r-)"
         +"TransitiveObjectProperty(:r)";
@@ -2508,7 +2507,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testIanBug5() throws Exception {
+    @Test void testIanBug5() throws Exception {
         String buffer = "TransitiveObjectProperty(:r1)"
         +"SubObjectPropertyOf(:r2 :r1)"
         +"TransitiveObjectProperty(:r2)";
@@ -2525,7 +2524,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testIanBug6() throws Exception {
+    @Test void testIanBug6() throws Exception {
         String buffer = "SubObjectPropertyOf(:S1 :R)"
         +"TransitiveObjectProperty(:S1)"
         +"SubObjectPropertyOf(:S2 :R)"
@@ -2553,7 +2552,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, false);
     }
 
-    public void testIanBug7() throws Exception {
+    @Test void testIanBug7() throws Exception {
         String buffer = "SubClassOf(:A ObjectComplementOf(:B))";
         loadReasonerWithAxioms(buffer);
 
@@ -2568,7 +2567,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, true);
     }
 
-    public void testIanBug8() throws Exception {
+    @Test void testIanBug8() throws Exception {
         String buffer = "SubClassOf(:X ObjectComplementOf(:Y))"
         +"SubClassOf(:A ObjectIntersectionOf(ObjectMinCardinality(1 :r :X) ObjectMaxCardinality(1 :r :X)))"
         +"SubClassOf(:A ObjectIntersectionOf(ObjectMinCardinality(1 :r :Y) ObjectMaxCardinality(1 :r :Y)))";
@@ -2576,7 +2575,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable("file:/c/test.owl#A", true);
     }
 
-    public void testIanMergeTest1() throws Exception {
+    @Test void testIanMergeTest1() throws Exception {
         String buffer = "InverseObjectProperties(:r :r-)"
         +"SubClassOf(:c ObjectSomeValuesFrom(:r ObjectAllValuesFrom(:r- ObjectComplementOf(:d))))";
         loadReasonerWithAxioms(buffer);
@@ -2625,7 +2624,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, true);
     }
 
-    public void testIanMergeTest2() throws Exception {
+    @Test void testIanMergeTest2() throws Exception {
         String buffer = "InverseObjectProperties(:r :r-)"
         +"SubClassOf(:c ObjectSomeValuesFrom(:r ObjectAllValuesFrom(:r- :d)))";
         loadReasonerWithAxioms(buffer);
@@ -2675,7 +2674,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable(desc, true);
     }
 
-    public void testIanQNRTest() throws Exception {
+    @Test void testIanQNRTest() throws Exception {
         String buffer = "SubObjectPropertyOf(:son :child)"
         +"SubObjectPropertyOf(:daughter :child)"
         +"EquivalentClasses(:A ObjectIntersectionOf(ObjectMinCardinality(2 :son :male) ObjectMinCardinality(2 :daughter ObjectComplementOf(:male))))"
@@ -2684,7 +2683,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSubsumedBy("file:/c/test.owl#A", "file:/c/test.owl#B", true);
     }
 
-    public void testIanRecursiveDefinitionTest1() throws Exception {
+    @Test void testIanRecursiveDefinitionTest1() throws Exception {
         String buffer = 
         "SubClassOf(:A ObjectIntersectionOf(ObjectSomeValuesFrom(:R0 :B) ObjectSomeValuesFrom(:R1 :B) ObjectSomeValuesFrom(:R2 :B) ObjectSomeValuesFrom(:R3 :B) ObjectSomeValuesFrom(:R4 :B) ObjectSomeValuesFrom(:R5 :B) ObjectSomeValuesFrom(:R6 :B) ObjectSomeValuesFrom(:R7 :B) ObjectSomeValuesFrom(:R8 :B) ObjectSomeValuesFrom(:R9 :B)))"
         +"SubClassOf(:B ObjectIntersectionOf(ObjectSomeValuesFrom(:R0 :A) ObjectSomeValuesFrom(:R1 :A) ObjectSomeValuesFrom(:R2 :A) ObjectSomeValuesFrom(:R3 :A) ObjectSomeValuesFrom(:R4 :A) ObjectSomeValuesFrom(:R5 :A) ObjectSomeValuesFrom(:R6 :A) ObjectSomeValuesFrom(:R7 :A) ObjectSomeValuesFrom(:R8 :A) ObjectSomeValuesFrom(:R9 :A)))";
@@ -2692,7 +2691,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable("file:/c/test.owl#A", true);
     }
 
-    public void testIanRecursiveDefinitionTest2() throws Exception {
+    @Test void testIanRecursiveDefinitionTest2() throws Exception {
         String buffer = 
         "SubClassOf(:A ObjectIntersectionOf(ObjectSomeValuesFrom(:R0 :B) ObjectSomeValuesFrom(:R1 :B) ObjectSomeValuesFrom(:R2 :B) ObjectSomeValuesFrom(:R3 :B) ObjectSomeValuesFrom(:R4 :B) ObjectSomeValuesFrom(:R5 :B) ObjectSomeValuesFrom(:R6 :B) ObjectSomeValuesFrom(:R7 :B) ObjectSomeValuesFrom(:R8 :B) ObjectSomeValuesFrom(:R9 :B)))"
         +"SubClassOf(:B ObjectIntersectionOf(ObjectSomeValuesFrom(:R0 :C) ObjectSomeValuesFrom(:R1 :C) ObjectSomeValuesFrom(:R2 :C) ObjectSomeValuesFrom(:R3 :C) ObjectSomeValuesFrom(:R4 :C) ObjectSomeValuesFrom(:R5 :C) ObjectSomeValuesFrom(:R6 :C) ObjectSomeValuesFrom(:R7 :C) ObjectSomeValuesFrom(:R8 :C) ObjectSomeValuesFrom(:R9 :C)))"
@@ -2701,7 +2700,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable("file:/c/test.owl#A", true);
     }
 
-    public void testIanRecursiveDefinitionTest3() throws Exception {
+    @Test void testIanRecursiveDefinitionTest3() throws Exception {
         String buffer = "SubClassOf(:A ObjectIntersectionOf(ObjectSomeValuesFrom(:R0 :B) ObjectSomeValuesFrom(:R1 :B) ObjectSomeValuesFrom(:R2 :B) ObjectSomeValuesFrom(:R3 :B) ObjectSomeValuesFrom(:R4 :B) ObjectSomeValuesFrom(:R5 :B) ObjectSomeValuesFrom(:R6 :B) ObjectSomeValuesFrom(:R7 :B) ObjectSomeValuesFrom(:R8 :B) ObjectSomeValuesFrom(:R9 :B)))"
         +"SubClassOf(:B ObjectIntersectionOf(ObjectSomeValuesFrom(:R0 :C) ObjectSomeValuesFrom(:R1 :C) ObjectSomeValuesFrom(:R2 :C) ObjectSomeValuesFrom(:R3 :C) ObjectSomeValuesFrom(:R4 :C) ObjectSomeValuesFrom(:R5 :C) ObjectSomeValuesFrom(:R6 :C) ObjectSomeValuesFrom(:R7 :C) ObjectSomeValuesFrom(:R8 :C) ObjectSomeValuesFrom(:R9 :C)))"
         +"SubClassOf(:C ObjectIntersectionOf(ObjectSomeValuesFrom(:R0 :D) ObjectSomeValuesFrom(:R1 :D) ObjectSomeValuesFrom(:R2 :D) ObjectSomeValuesFrom(:R3 :D) ObjectSomeValuesFrom(:R4 :D) ObjectSomeValuesFrom(:R5 :D) ObjectSomeValuesFrom(:R6 :D) ObjectSomeValuesFrom(:R7 :D) ObjectSomeValuesFrom(:R8 :D) ObjectSomeValuesFrom(:R9 :D)))"
@@ -2710,7 +2709,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable("file:/c/test.owl#A", true);
     }
 
-    public void testIanBackjumping1() throws Exception {
+    @Test void testIanBackjumping1() throws Exception {
         String buffer = "SubClassOf(:C1 ObjectIntersectionOf(" + "ObjectUnionOf(:A0 :B0) " + "ObjectUnionOf(:A1 :B1)"
                 + "ObjectUnionOf(:A2 :B2)" + "ObjectUnionOf(:A3 :B3)" + "ObjectUnionOf(:A4 :B4)"
                 + "ObjectUnionOf(:A5 :B5)" + "ObjectUnionOf(:A6 :B6)" + "ObjectUnionOf(:A7 :B7)"
@@ -2731,7 +2730,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable("file:/c/test.owl#test", false);
     }
 
-    public void testIanBackjumping2() throws Exception {
+    @Test void testIanBackjumping2() throws Exception {
         String buffer = "SubClassOf(:C2 ObjectIntersectionOf(ObjectUnionOf(:A :B) ObjectUnionOf(:A ObjectComplementOf(:B))))"
         +"SubClassOf(:C3 ObjectIntersectionOf(ObjectUnionOf(ObjectComplementOf(:A) :B) ObjectUnionOf(ObjectComplementOf(:A) ObjectComplementOf(:B))))"
         +"SubClassOf(:C4 ObjectSomeValuesFrom(:R ObjectIntersectionOf(:C2 :C8)))"
@@ -2753,7 +2752,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable("file:/c/test.owl#test", true);
     }
 
-    public void testIanBackjumping3() throws Exception {
+    @Test void testIanBackjumping3() throws Exception {
         String buffer = "SubClassOf(:C2 ObjectIntersectionOf(ObjectUnionOf(:A :B) ObjectUnionOf(:A ObjectComplementOf(:B))))"
         +"SubClassOf(:C3 ObjectIntersectionOf(ObjectUnionOf(ObjectComplementOf(:A) :B) ObjectUnionOf(ObjectComplementOf(:A) ObjectComplementOf(:B))))"
         +"SubClassOf(:C4 ObjectSomeValuesFrom(:R ObjectIntersectionOf(:C2 :C8)))"
@@ -2776,7 +2775,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertSatisfiable("file:/c/test.owl#test", false);
     }
 
-    public void testNominals1() throws Exception {
+    @Test void testNominals1() throws Exception {
         String buffer = "ClassAssertion(:A :a) "
         +"ClassAssertion(:A :b) "
         +"SubClassOf(:A ObjectSomeValuesFrom(:R :A)) "
@@ -2785,7 +2784,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(true);
     }
 
-    public void testNominals2() throws Exception {
+    @Test void testNominals2() throws Exception {
         String buffer = "ClassAssertion(:A :a) "
         +"SubClassOf(:A ObjectSomeValuesFrom(:R :A)) "
         +"SubClassOf(:A ObjectSomeValuesFrom(:S ObjectOneOf(:n))) "
@@ -2798,7 +2797,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(true);
     }
 
-    public void testNominals3() throws Exception {
+    @Test void testNominals3() throws Exception {
         String buffer = "SubClassOf(:A ObjectSomeValuesFrom(:R :A)) "
         +"SubClassOf(:A ObjectSomeValuesFrom(:S ObjectOneOf(:n))) "
         +"ClassAssertion(ObjectSomeValuesFrom(:R :A) :a) "
@@ -2825,7 +2824,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertInstanceOf(desc, n, true);
     }
 
-    public void testNominals4() throws Exception {
+    @Test void testNominals4() throws Exception {
         String buffer = "DisjointClasses(:A :B) "
         +"SubClassOf(:A ObjectSomeValuesFrom(:R :A))"
         +"SubClassOf(:A ObjectSomeValuesFrom(:S ObjectOneOf(:n)))"
@@ -2864,7 +2863,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertInstanceOf(desc, n, true);
     }
 
-    public void testNominals5() throws Exception {
+    @Test void testNominals5() throws Exception {
         String buffer = "DisjointClasses(:A :B) "
         +"SubClassOf(:A ObjectSomeValuesFrom(:R :A))"
         +"SubClassOf(:A ObjectSomeValuesFrom(:S ObjectOneOf(:n)))"
@@ -2897,7 +2896,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertInstanceOf(desc, n, true);
     }
 
-    public void testNominals6() throws Exception {
+    @Test void testNominals6() throws Exception {
         String buffer = "DisjointClasses(:A :B) "
         +"SubClassOf(:A ObjectSomeValuesFrom(:R :A))"
         +"SubClassOf(:A ObjectSomeValuesFrom(:S ObjectOneOf(:n)))"
@@ -2933,13 +2932,13 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertInstanceOf(desc, n, false);
     }
 
-    public void testDependencyDisjunctionMergingBug() throws Exception {
+    @Test void testDependencyDisjunctionMergingBug() throws Exception {
         loadReasonerFromResource("res/dependency-disjuntion-merging-bug.xml");
         assertSubsumedBy("http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Anjou",
                 "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#FullBodiedWine", false);
     }
 
-    public void testNovelNominals() throws Exception {
+    @Test void testNovelNominals() throws Exception {
         String axioms = "ClassAssertion(:C :a)";
         loadReasonerWithAxioms(axioms);
         OWLIndividual a = m_dataFactory.getOWLNamedIndividual(IRI.create("file:/c/test.owl#a"));
@@ -2950,7 +2949,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertFalse(m_reasoner.isSatisfiable(desc));
     }
 
-    public void testKeys1() throws Exception {
+    @Test void testKeys1() throws Exception {
         String axioms = "DataPropertyAssertion(:hasSSN :Peter \"123-45-6789\") " + "ClassAssertion(:Person :Peter) "
                 + "DataPropertyAssertion(:hasSSN :Peter_Griffin \"123-45-6789\") "
                 + "ClassAssertion(:Person :Peter_Griffin) " + "DifferentIndividuals(:Peter :Peter_Griffin)"
@@ -2960,7 +2959,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testKeys2() throws Exception {
+    @Test void testKeys2() throws Exception {
         String axioms = "DataPropertyAssertion(:hasSSN :Peter \"123-45-6789\") " + "ClassAssertion(:Person :Peter) "
                 + "ClassAssertion(ObjectSomeValuesFrom(:marriedTo ObjectIntersectionOf(:Man DataHasValue(:hasSSN \"123-45-6789\"^^xsd:string))) :Lois) "
                 + "SubClassOf(:Man ObjectComplementOf(:Person))" + "HasKey(:Person () (:hasSSN))";
@@ -2969,7 +2968,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(true);
     }
 
-    public void testNominalMerging() throws Exception {
+    @Test void testNominalMerging() throws Exception {
         // This is the example from Section 3.2.5 from the SHOIQ+ paper.
         String buffer = "ObjectPropertyAssertion(:S :a :a)"
         +"ClassAssertion(ObjectSomeValuesFrom(:R :B) :a)"
@@ -2981,7 +2980,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(true);
     }
 
-    public void testNIRuleBlockingWithUnraveling() throws Exception {
+    @Test void testNIRuleBlockingWithUnraveling() throws Exception {
         // This is the example from Section 3.2.6 of the SHOIQ+ paper.
         String buffer = "ClassAssertion(:A :a)"
         +"ClassAssertion(ObjectSomeValuesFrom(:R :B) :a)"
@@ -2995,7 +2994,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testPunning() throws Exception {
+    @Test void testPunning() throws Exception {
         String buffer = "Declaration(Class(:Person))"
         +"ClassAssertion(:Service :s1)"
         +"ObjectPropertyAssertion(:hasInput :s1 :Person)";
@@ -3003,7 +3002,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(true);
     }
 
-    public void testPunning2() throws Exception {
+    @Test void testPunning2() throws Exception {
         String buffer = "Declaration( Class( :Deprecated_Properties ) )"
         +"Declaration( ObjectProperty( :is_located_in ) )"
         +"ClassAssertion( :Deprecated_Properties :is_located_in )";
@@ -3011,7 +3010,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(true);
     }
 
-    public void testPunning3() throws Exception {
+    @Test void testPunning3() throws Exception {
         String buffer = "Declaration( Class( :Person ) ) Declaration( Class( :Company ) )"
         +"SubClassOf( :PersonCompany :Association )"
         +"ObjectPropertyDomain( :PersonCompany :Person ) ObjectPropertyRange( :PersonCompany :Company )";
@@ -3019,13 +3018,13 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(true);
     }
 
-    public void testInverses2() throws Exception {
+    @Test void testInverses2() throws Exception {
         String buffer = "InverseObjectProperties( :hasPart :partOf ) ObjectPropertyAssertion(:hasPart :a :b) NegativeObjectPropertyAssertion(:partOf :b :a)";
         loadReasonerWithAxioms(buffer);
         assertABoxSatisfiable(false);
     }
 
-    public void testMissingCBug() throws Exception {
+    @Test void testMissingCBug() throws Exception {
         String axioms = "EquivalentClasses(:C ObjectMinCardinality(0 :p owl:Nothing))";
         loadReasonerWithAxioms(axioms);
         m_reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
@@ -3041,26 +3040,26 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertTrue(buffer.toString().equals(buffer2.toString()));
     }
 
-    public void testInverses() throws Exception {
+    @Test void testInverses() throws Exception {
         String buffer = "EquivalentObjectProperties( :hasPart ObjectInverseOf( :partOf ) ) ObjectPropertyAssertion(:hasPart :a :b) NegativeObjectPropertyAssertion(:partOf :b :a)";
         loadReasonerWithAxioms(buffer);
         assertABoxSatisfiable(false);
     }
 
-    public void testAnonymousIndiviuals2() throws Exception {
+    @Test void testAnonymousIndiviuals2() throws Exception {
         String axioms = "ObjectPropertyAssertion( :city _:a1 :Paris )";
         loadReasonerWithAxioms(axioms);
         assertABoxSatisfiable(true);
     }
 
-    public void testAnonymousIndiviuals3() throws Exception {
+    @Test void testAnonymousIndiviuals3() throws Exception {
         String axioms = "ObjectPropertyAssertion( a:livesAt a:Peter _:a1 )"
                 + "ObjectPropertyAssertion( a:city _:a1 a:Quahog )" + "ObjectPropertyAssertion( a:state _:a1 a:RI )";
         loadReasonerWithAxioms(axioms);
         assertABoxSatisfiable(true);
     }
 
-    public void testSatisfiabilityWithRIAs1() throws Exception {
+    @Test void testSatisfiabilityWithRIAs1() throws Exception {
         String axioms = "ObjectPropertyAssertion( :R1 :a :b )" + "ObjectPropertyAssertion( :R1 :b :c )"
                 + "ObjectPropertyAssertion( :R2 :c :d )" + "ObjectPropertyAssertion( :R2 :d :e )"
                 + "ObjectPropertyAssertion( :R3 :e :f )" + "SubObjectPropertyOf(:R1 :dumm) "
@@ -3073,7 +3072,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiabilityWithRIAs2() throws Exception {
+    @Test void testSatisfiabilityWithRIAs2() throws Exception {
         String axioms = "ObjectPropertyAssertion( :R1 :a :b )" + "ObjectPropertyAssertion( :S3- :b :c )"
                 + "ObjectPropertyAssertion( :S2- :c :d )" + "ObjectPropertyAssertion( :S1- :d :e )"
                 + "ObjectPropertyAssertion( :R2 :e :f )" + "InverseObjectProperties(:S :S-) "
@@ -3090,7 +3089,7 @@ public class ReasonerTest extends AbstractReasonerTest {
     // of its inverse have an automaton.
     // Then the auto for R should be joined with the mirrored copy of the auto
     // for Inv(R).
-    public void testSatisfiabilityWithRIAs3() throws Exception {
+    @Test void testSatisfiabilityWithRIAs3() throws Exception {
         String axioms = "ObjectPropertyAssertion( :R1 :a :b )" + "ObjectPropertyAssertion( :R2 :b :c )"
                 + "InverseObjectProperties(:R :R-) " + "ClassAssertion(ObjectComplementOf(:C) :a) "
                 + "ClassAssertion(ObjectAllValuesFrom(:R :C) :c) "
@@ -3100,7 +3099,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiabilityWithRIAs4() throws Exception {
+    @Test void testSatisfiabilityWithRIAs4() throws Exception {
         String axioms = "SubObjectPropertyOf(ObjectPropertyChain(:R2 :R3) :R) " + "EquivalentObjectProperties( :R :R2 )"
                 + "EquivalentObjectProperties( :R :R3 )" + "ObjectPropertyAssertion( :R2 :a :b )"
                 + "ObjectPropertyAssertion( :R3 :b :c )" + "ClassAssertion(ObjectComplementOf(:C) :c) "
@@ -3109,7 +3108,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiabilityWithRIAs5() throws Exception {
+    @Test void testSatisfiabilityWithRIAs5() throws Exception {
         String axioms = "ObjectPropertyAssertion( :R1 :a :b )" + "ObjectPropertyAssertion( :R2 :b :c )"
                 + "ClassAssertion(ObjectComplementOf(:C) :a) "
                 + "ClassAssertion(ObjectAllValuesFrom(ObjectInverseOf(:R) :C) :c) "
@@ -3118,7 +3117,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiabilityWithRIAs6() throws Exception {
+    @Test void testSatisfiabilityWithRIAs6() throws Exception {
         String axioms = "ObjectPropertyAssertion( :R1 :a :b )" + "ObjectPropertyAssertion( :R2 :b :c )"
                 + "ClassAssertion(ObjectComplementOf(:C) :a) " + "ClassAssertion(ObjectAllValuesFrom(:R :C) :c) "
                 + "SubObjectPropertyOf(ObjectPropertyChain(:R1 :R2) ObjectInverseOf(:R)) ";
@@ -3126,7 +3125,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiabilityWithRIAs7() throws Exception {
+    @Test void testSatisfiabilityWithRIAs7() throws Exception {
         String axioms = "ObjectPropertyAssertion( :R1 :a :b )" + "ObjectPropertyAssertion( :R2 :b :c )"
                 + "ClassAssertion(ObjectComplementOf(:C) :a) " + "ClassAssertion(ObjectAllValuesFrom(:R :C) :c) "
                 + "SubObjectPropertyOf(ObjectPropertyChain(ObjectInverseOf(:R2) ObjectInverseOf(:R1)) :R) ";
@@ -3134,7 +3133,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiabilityWithRIAs8() throws Exception {
+    @Test void testSatisfiabilityWithRIAs8() throws Exception {
         String axioms = "ObjectPropertyAssertion( :R1 :a :b )" + "ObjectPropertyAssertion( :S1 :b :c )"
                 + "ObjectPropertyAssertion( :S2 :c :d )" + "ObjectPropertyAssertion( :S1 :d :e )"
                 + "ObjectPropertyAssertion( :S2 :e :f )" + "TransitiveObjectProperty(:S)"
@@ -3145,7 +3144,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiabilityWithRIAs9() throws Exception {
+    @Test void testSatisfiabilityWithRIAs9() throws Exception {
         String axioms = "ObjectPropertyAssertion( :R :a :b )" + "TransitiveObjectProperty(:R)"
                 + "SymmetricObjectProperty(:R)" + "ClassAssertion(ObjectComplementOf(:C) :a) "
                 + "ClassAssertion(ObjectAllValuesFrom(:R :C) :a) ";
@@ -3153,7 +3152,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiabilityWithRIAs10() throws Exception {
+    @Test void testSatisfiabilityWithRIAs10() throws Exception {
         String axioms = "ObjectPropertyAssertion( :R1 :a :b )" + "ObjectPropertyAssertion( :R2 :b :c )"
                 + "ObjectPropertyAssertion( :R1 :c :d )" + "ObjectPropertyAssertion( :R2 :d :e )"
                 + "SymmetricObjectProperty(:R)" + "TransitiveObjectProperty(ObjectInverseOf(:R))"
@@ -3163,7 +3162,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiabilityWithRIAs11() throws Exception {
+    @Test void testSatisfiabilityWithRIAs11() throws Exception {
         String axioms = "ObjectPropertyAssertion( :R1 :a :b )" + "ObjectPropertyAssertion( :R2 :b :c )"
                 + "ObjectPropertyAssertion( :R1 :c :d )" + "ObjectPropertyAssertion( :R2 :d :e )"
                 + "SymmetricObjectProperty(:R)" + "TransitiveObjectProperty(:R)"
@@ -3174,7 +3173,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiabilityWithRIAs11b() throws Exception {
+    @Test void testSatisfiabilityWithRIAs11b() throws Exception {
         String axioms = "ObjectPropertyAssertion( :R1 :a :b )" + "ObjectPropertyAssertion( :R2 :b :c )"
                 + "ObjectPropertyAssertion( :R1 :c :d )" + "ObjectPropertyAssertion( :R2 :d :e )"
                 + "SymmetricObjectProperty(ObjectInverseOf(:R))" + "TransitiveObjectProperty(ObjectInverseOf(:R))"
@@ -3184,7 +3183,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiabilityWithRIAs12() throws Exception {
+    @Test void testSatisfiabilityWithRIAs12() throws Exception {
         String axioms = "ObjectPropertyAssertion( :R1 :a :b )" + "ObjectPropertyAssertion( :R2 :b :c )"
                 + "ObjectPropertyAssertion( :R1 :c :d )" + "ObjectPropertyAssertion( :R2 :d :e )"
                 + "TransitiveObjectProperty(:R)" + "ClassAssertion(ObjectComplementOf(:C) :e) "
@@ -3194,7 +3193,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiabilityWithRIAs13() throws Exception {
+    @Test void testSatisfiabilityWithRIAs13() throws Exception {
         String axioms = "ObjectPropertyAssertion( :R2 :b :a )" + "ObjectPropertyAssertion( :P1 :b :c )"
                 + "ObjectPropertyAssertion( :P2 :c :d )" + "InverseObjectProperties(:R1 :S)"
                 + "ClassAssertion(ObjectComplementOf(:C) :a) " + "ClassAssertion(ObjectAllValuesFrom(:R :C) :d) "
@@ -3205,7 +3204,7 @@ public class ReasonerTest extends AbstractReasonerTest {
         assertABoxSatisfiable(false);
     }
 
-    public void testSatisfiabilityWithRIAs14() throws Exception {
+    @Test void testSatisfiabilityWithRIAs14() throws Exception {
         String axioms = "Declaration( Class( :CT ) )" + "EquivalentObjectProperties( :P owl:topObjectProperty )"
                 + "EquivalentClasses( :CP ObjectSomeValuesFrom( :P :Cf ) )" + "ClassAssertion(:Cf :a) ";
         loadReasonerWithAxioms(axioms);

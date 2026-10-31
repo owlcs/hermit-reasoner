@@ -1,18 +1,17 @@
 package org.semanticweb.HermiT.tableau;
-@SuppressWarnings("javadoc")
-public class TupleIndexTest extends AbstractReasonerInternalsTest {
-    protected TupleIndex m_tupleIndex;
 
-    public TupleIndexTest(String name) {
-        super(name);
-    }
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-    @Override
-    protected void setUp() {
-        m_tupleIndex = new TupleIndex(new int[] { 0, 1, 2 });
-    }
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-    public void testIndex1() {
+//Test for the HermiT internals
+@Tag("tableau")
+class TupleIndexTest extends AbstractReasonerInternalsTest {
+    protected TupleIndex m_tupleIndex = new TupleIndex(new int[] { 0, 1, 2 });
+
+    @Test void testIndex1() {
         assertRetrieval(S(), I());
 
         addTuple(1, S("a", "b", "c"));
@@ -45,7 +44,7 @@ public class TupleIndexTest extends AbstractReasonerInternalsTest {
         assertRetrieval(S(), I());
     }
 
-    public void testIndex2() {
+    @Test void testIndex2() {
         String[][] tuples = new String[10000][3];
         int[] tupleIndexes = new int[tuples.length];
         for (int index = 0; index < tuples.length; index++) {

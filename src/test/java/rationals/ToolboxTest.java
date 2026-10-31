@@ -34,29 +34,20 @@
  *
  */
 package rationals;
-
+import static org.junit.jupiter.api.Assertions.*;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
 import rationals.transformations.TransformationsToolBox;
 
 /**
  * @author nono
  * @version $Id: ToolboxTest.java 2 2006-08-24 14:41:48Z oqube $
  */
-@SuppressWarnings("javadoc")
-public class ToolboxTest extends TestCase {
+class ToolboxTest {
 
-    /**
-     * Constructor for ToolboxTest.
-     * 
-     * @param arg0
-     */
-    public ToolboxTest(String arg0) {
-        super(arg0);
-    }
-
-    public void testClosure1() {
+    @Test void testClosure1() {
         Automaton a = new Automaton();
         State s1 = a.addState(true, false);
         State s2 = a.addState(false, false);

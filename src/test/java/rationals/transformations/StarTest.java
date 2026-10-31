@@ -35,7 +35,11 @@
  */
 package rationals.transformations;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import rationals.Automaton;
 import rationals.State;
 import rationals.Transition;
@@ -45,14 +49,11 @@ import rationals.properties.ContainsEpsilon;
  * @author nono
  * @version $Id: StarTest.java 2 2006-08-24 14:41:48Z oqube $
  */
-@SuppressWarnings("javadoc")
-public class StarTest extends TestCase {
+class StarTest {
 
     private Automaton automaton;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @BeforeEach void setUp() throws Exception {
         automaton = new Automaton();
         State s1 = automaton.addState(true, false);
         State s2 = automaton.addState(false, false);
@@ -61,16 +62,7 @@ public class StarTest extends TestCase {
         automaton.addTransition(new Transition(s2, "b", s3), null);
     }
 
-    /**
-     * Constructor for StarTest.
-     * 
-     * @param arg0
-     */
-    public StarTest(String arg0) {
-        super(arg0);
-    }
-
-    public void test() {
+    @Test void test() {
         Star star = new Star();
         Automaton b = star.transform(automaton);
         assertTrue(new ContainsEpsilon().test(b));

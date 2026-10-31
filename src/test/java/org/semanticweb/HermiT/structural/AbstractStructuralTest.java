@@ -1,5 +1,6 @@
 package org.semanticweb.HermiT.structural;
 
+import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,7 +12,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import junit.framework.AssertionFailedError;
+import org.opentest4j.AssertionFailedError;
 
 import org.semanticweb.HermiT.AbstractOntologyTest;
 import org.semanticweb.HermiT.Configuration;
@@ -28,7 +29,7 @@ public abstract class AbstractStructuralTest extends AbstractOntologyTest {
     protected static void assertContainsAll(String testName, Collection<String> actual, String[] control) {
         try {
             assertEquals(Arrays.stream(control).sorted().collect(Collectors.joining("\n")),actual.stream().sorted().collect(Collectors.joining("\n")));
-        } catch (AssertionFailedError e) {
+        } catch (org.opentest4j.AssertionFailedError e) {
             System.out.println("Test " + testName + " failed!");
                 System.out.println("Control set (" + control.length + " elements):");
                 System.out.println("------------------------------------------");
