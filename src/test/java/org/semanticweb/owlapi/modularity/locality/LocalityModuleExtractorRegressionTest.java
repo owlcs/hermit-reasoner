@@ -42,7 +42,7 @@ class LocalityModuleExtractorRegressionTest {
 
     private Set<OWLAxiom> extract(LocalityClass kind, Set<OWLAxiom> axioms,
                                   OWLEntity... seed) {
-        return new SyntacticLocalityModuleExtractor(kind, axioms.stream())
+        return new SyntacticLocalityModuleExtractor(kind, axioms.stream(), df)
                 .extract(Arrays.stream(seed)).collect(Collectors.toSet());
     }
 
@@ -105,7 +105,7 @@ class LocalityModuleExtractorRegressionTest {
         OWLAxiom dependent = sub(a, b);
         Set<OWLAxiom> axioms = new HashSet<>(Arrays.asList(global, dependent));
         SyntacticLocalityModuleExtractor extractor =
-                new SyntacticLocalityModuleExtractor(LocalityClass.BOTTOM, axioms.stream());
+                new SyntacticLocalityModuleExtractor(LocalityClass.BOTTOM, axioms.stream(), df);
         Set<OWLAxiom> result = extractor.extract(Stream.empty(),
                 Optional.of(axiom -> !axiom.equals(global))).collect(Collectors.toSet());
         assertTrue(result.isEmpty());
@@ -116,7 +116,7 @@ class LocalityModuleExtractorRegressionTest {
     void cachedGlobalAxiomsAreFilteredPerInvocation() {
         OWLAxiom global = sub(df.getOWLThing(), a);
         SyntacticLocalityModuleExtractor extractor =
-                new SyntacticLocalityModuleExtractor(LocalityClass.BOTTOM, Stream.of(global));
+                new SyntacticLocalityModuleExtractor(LocalityClass.BOTTOM, Stream.of(global), df);
         Predicate<OWLAxiom> rejectAll = axiom -> false;
         assertTrue(extractor.extract(Stream.empty(), Optional.of(rejectAll))
                 .collect(Collectors.toSet()).isEmpty());
@@ -138,7 +138,7 @@ class LocalityModuleExtractorRegressionTest {
 
         for (LocalityClass kind : LocalityClass.values()) {
             SyntacticLocalityModuleExtractor extractor =
-                    new SyntacticLocalityModuleExtractor(kind, base.stream());
+                    new SyntacticLocalityModuleExtractor(kind, base.stream(), df);
             for (int mask = 0; mask < (1 << choices.length); mask++) {
                 Set<OWLEntity> seed = new HashSet<>();
                 for (int bit = 0; bit < choices.length; bit++) {
@@ -704,7 +704,7 @@ class LocalityModuleExtractorRegressionTest {
         OWLAxiom axiom = sub(a, b);
         SyntacticLocalityModuleExtractor extractor = assertDoesNotThrow(
                 () -> new SyntacticLocalityModuleExtractor(LocalityClass.BOTTOM,
-                        Stream.of(axiom)));
+                        Stream.of(axiom), df));
         assertTrue(extractor.extract(Stream.empty()).collect(Collectors.toSet()).isEmpty());
     }
 
@@ -721,7 +721,7 @@ class LocalityModuleExtractorRegressionTest {
         // Without one the group cannot be checked, so it is kept, as a whole, in every module.
         for (LocalityClass kind : LocalityClass.values()) {
             SyntacticLocalityModuleExtractor extractor = assertDoesNotThrow(
-                    () -> new SyntacticLocalityModuleExtractor(kind, group.stream()));
+                    () -> new SyntacticLocalityModuleExtractor(kind, group.stream(), df));
             assertEquals(group, extractor.extract(Stream.empty()).collect(Collectors.toSet()),
                     kind.toString());
         }
@@ -853,7 +853,7 @@ class LocalityModuleExtractorRegressionTest {
                 df.getRDFSLabel(), x, df.getOWLLiteral("label"));
         SyntacticLocalityModuleExtractor extractor = assertDoesNotThrow(
                 () -> new SyntacticLocalityModuleExtractor(LocalityClass.BOTTOM,
-                        Stream.of(annotation)));
+                        Stream.of(annotation), df));
         assertTrue(extractor.extract(Stream.empty()).collect(Collectors.toSet()).isEmpty());
     }
 
